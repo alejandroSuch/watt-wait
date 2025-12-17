@@ -347,27 +347,61 @@
             color: var(--text-muted);
         }
 
-        .schedule-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
+        .schedule-section {
             background: var(--bg-input);
             border-radius: 12px;
             margin-top: 12px;
-            gap: 12px;
+            overflow: hidden;
         }
 
-        .schedule-toggle {
+        .schedule-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            flex: 1;
+            padding: 12px 16px;
         }
 
-        .schedule-label {
+        .schedule-title {
             font-size: 14px;
             color: var(--text-secondary);
+        }
+
+        .schedule-options {
+            display: none;
+            padding: 0 16px 16px;
+            gap: 12px;
+            flex-direction: column;
+        }
+
+        .schedule-options.active {
+            display: flex;
+        }
+
+        .schedule-mode {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--bg-card);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .mode-btn:not(.active):hover {
+            border-color: var(--text-muted);
         }
 
         .toggle {
@@ -417,26 +451,20 @@
             background-color: var(--accent);
         }
 
-        .schedule-row input[type="time"] {
+        .schedule-section input[type="time"] {
             background: var(--bg-card);
             border: none;
             border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 16px;
+            padding: 12px 16px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--accent);
             text-align: center;
             outline: none;
-            width: 90px;
-            transition: opacity 0.2s;
+            width: 100%;
         }
 
-        .schedule-row input[type="time"]:disabled {
-            opacity: 0.4;
-            color: var(--text-muted);
-        }
-
-        .schedule-row input[type="time"]::-webkit-calendar-picker-indicator {
+        .schedule-section input[type="time"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
             opacity: 0.5;
         }
@@ -737,15 +765,21 @@
                 </div>
             </div>
 
-            <div class="schedule-row">
-                <div class="schedule-toggle">
+            <div class="schedule-section">
+                <div class="schedule-header">
                     <label class="toggle">
                         <input type="checkbox" id="scheduleEnabled">
                         <span class="toggle-slider"></span>
                     </label>
-                    <span class="schedule-label" data-i18n="startAt">Empezar a cargar a las</span>
+                    <span class="schedule-title" data-i18n="scheduleCharging">Programar carga</span>
                 </div>
-                <input type="time" id="scheduleTime" value="23:00" disabled>
+                <div class="schedule-options" id="scheduleOptions">
+                    <div class="schedule-mode">
+                        <button class="mode-btn active" data-mode="start" data-i18n="startAt">Empezar a las</button>
+                        <button class="mode-btn" data-mode="end" data-i18n="finishAt">Terminar a las</button>
+                    </div>
+                    <input type="time" id="scheduleTime" value="07:00">
+                </div>
             </div>
         </div>
 
@@ -754,8 +788,13 @@
             <div class="result-time" id="resultTime">4<span>h</span> 30<span>min</span></div>
 
             <div class="result-eta">
-                <div class="result-eta-label" data-i18n="readyAt">Carga completa a las</div>
+                <div class="result-eta-label" id="resultEtaLabel" data-i18n="readyAt">Carga completa a las</div>
                 <div class="result-eta-time" id="resultEta">14:30</div>
+            </div>
+
+            <div class="result-eta result-start" id="resultStartRow" style="display: none;">
+                <div class="result-eta-label" data-i18n="startChargingAt">Empezar a cargar a las</div>
+                <div class="result-eta-time" id="resultStart">--:--</div>
             </div>
 
             <div class="result-details">
@@ -792,9 +831,12 @@
                 batteryCapacity: 'Capacidad de batería',
                 chargerPower: 'Potencia del cargador',
                 efficiency: 'Eficiencia de carga',
-                startAt: 'Empezar a cargar a las',
+                scheduleCharging: 'Programar carga',
+                startAt: 'Empezar a las',
+                finishAt: 'Terminar a las',
                 estimatedTime: 'Tiempo estimado de carga',
                 readyAt: 'Carga completa a las',
+                startChargingAt: 'Empezar a cargar a las',
                 energyNeeded: 'Energía necesaria',
                 gridConsumption: 'Consumo de red',
                 footer: 'Hecho con ⚡ para conductores de EV',
@@ -813,9 +855,12 @@
                 batteryCapacity: 'Battery capacity',
                 chargerPower: 'Charger power',
                 efficiency: 'Charging efficiency',
-                startAt: 'Start charging at',
+                scheduleCharging: 'Schedule charging',
+                startAt: 'Start at',
+                finishAt: 'Finish at',
                 estimatedTime: 'Estimated charging time',
                 readyAt: 'Fully charged at',
+                startChargingAt: 'Start charging at',
                 energyNeeded: 'Energy needed',
                 gridConsumption: 'Grid consumption',
                 footer: 'Made with ⚡ for EV drivers',
@@ -834,9 +879,12 @@
                 batteryCapacity: 'Capacité de batterie',
                 chargerPower: 'Puissance du chargeur',
                 efficiency: 'Efficacité de charge',
-                startAt: 'Commencer à charger à',
+                scheduleCharging: 'Programmer la charge',
+                startAt: 'Commencer à',
+                finishAt: 'Terminer à',
                 estimatedTime: 'Temps de charge estimé',
                 readyAt: 'Charge complète à',
+                startChargingAt: 'Commencer à charger à',
                 energyNeeded: 'Énergie nécessaire',
                 gridConsumption: 'Consommation réseau',
                 footer: 'Fait avec ⚡ pour les conducteurs de VE',
@@ -855,9 +903,12 @@
                 batteryCapacity: 'Capacità batteria',
                 chargerPower: 'Potenza caricatore',
                 efficiency: 'Efficienza di ricarica',
-                startAt: 'Iniziare a caricare alle',
+                scheduleCharging: 'Programma ricarica',
+                startAt: 'Inizia alle',
+                finishAt: 'Termina alle',
                 estimatedTime: 'Tempo di ricarica stimato',
                 readyAt: 'Ricarica completa alle',
+                startChargingAt: 'Iniziare a caricare alle',
                 energyNeeded: 'Energia necessaria',
                 gridConsumption: 'Consumo dalla rete',
                 footer: 'Fatto con ⚡ per i conducenti di EV',
@@ -876,9 +927,12 @@
                 batteryCapacity: 'Capacidade da bateria',
                 chargerPower: 'Potência do carregador',
                 efficiency: 'Eficiência de carga',
-                startAt: 'Começar a carregar às',
+                scheduleCharging: 'Programar carregamento',
+                startAt: 'Começar às',
+                finishAt: 'Terminar às',
                 estimatedTime: 'Tempo estimado de carregamento',
                 readyAt: 'Carga completa às',
+                startChargingAt: 'Começar a carregar às',
                 energyNeeded: 'Energia necessária',
                 gridConsumption: 'Consumo da rede',
                 footer: 'Feito com ⚡ para motoristas de VE',
@@ -910,7 +964,8 @@
             chargerPower: 3.7,
             efficiency: 90,
             scheduleEnabled: false,
-            scheduleTime: '23:00',
+            scheduleMode: 'end', // 'start' or 'end'
+            scheduleTime: '07:00',
             lang: null // null = auto-detect
         };
 
@@ -935,6 +990,7 @@
                     chargerPower: parseFloat(chargerPowerInput.value),
                     efficiency: parseInt(efficiencyInput.value),
                     scheduleEnabled: scheduleEnabledInput.checked,
+                    scheduleMode: currentScheduleMode,
                     scheduleTime: scheduleTimeInput.value,
                     lang: currentLang
                 };
@@ -992,15 +1048,22 @@
         const chargerPowerInput = document.getElementById('chargerPower');
         const efficiencyInput = document.getElementById('efficiency');
         const scheduleEnabledInput = document.getElementById('scheduleEnabled');
+        const scheduleOptionsEl = document.getElementById('scheduleOptions');
         const scheduleTimeInput = document.getElementById('scheduleTime');
+        const modeBtns = document.querySelectorAll('.mode-btn');
         const batteryFill = document.getElementById('batteryFill');
         const batteryTarget = document.getElementById('batteryTarget');
         const resultTime = document.getElementById('resultTime');
         const resultEta = document.getElementById('resultEta');
+        const resultEtaLabel = document.getElementById('resultEtaLabel');
+        const resultStartRow = document.getElementById('resultStartRow');
+        const resultStart = document.getElementById('resultStart');
         const energyNeeded = document.getElementById('energyNeeded');
         const energyFromGrid = document.getElementById('energyFromGrid');
         const warningMessage = document.getElementById('warningMessage');
         const warningText = document.getElementById('warningText');
+
+        let currentScheduleMode = 'end';
 
         // Apply loaded settings to inputs
         function applySettings(settings) {
@@ -1011,7 +1074,13 @@
             efficiencyInput.value = settings.efficiency;
             scheduleEnabledInput.checked = settings.scheduleEnabled;
             scheduleTimeInput.value = settings.scheduleTime;
-            scheduleTimeInput.disabled = !settings.scheduleEnabled;
+            currentScheduleMode = settings.scheduleMode || 'end';
+
+            // Update schedule UI
+            scheduleOptionsEl.classList.toggle('active', settings.scheduleEnabled);
+            modeBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === currentScheduleMode);
+            });
         }
 
         // Settings will be applied during initialization at the end
@@ -1066,30 +1135,48 @@
                 resultTime.innerHTML = hours + '<span>' + t.hours + '</span> ' + minutes + '<span>' + t.minutes + '</span>';
             }
 
-            // Calculate ETA
-            let startTime;
+            // Calculate ETA based on schedule mode
             const now = new Date();
+            let startTime, endTime;
 
             if (scheduleEnabledInput.checked && scheduleTimeInput.value) {
-                // Use scheduled start time
                 const [schedHours, schedMinutes] = scheduleTimeInput.value.split(':').map(Number);
-                startTime = new Date(now);
-                startTime.setHours(schedHours, schedMinutes, 0, 0);
+                const scheduledTime = new Date(now);
+                scheduledTime.setHours(schedHours, schedMinutes, 0, 0);
 
                 // If scheduled time is in the past today, assume tomorrow
-                if (startTime <= now) {
-                    startTime.setDate(startTime.getDate() + 1);
+                if (scheduledTime <= now) {
+                    scheduledTime.setDate(scheduledTime.getDate() + 1);
+                }
+
+                if (currentScheduleMode === 'start') {
+                    // Mode: Start at X → calculate end time
+                    startTime = scheduledTime;
+                    endTime = new Date(startTime.getTime() + timeHours * 60 * 60 * 1000);
+                    resultStartRow.style.display = 'none';
+                } else {
+                    // Mode: Finish at X → calculate start time
+                    endTime = scheduledTime;
+                    startTime = new Date(endTime.getTime() - timeHours * 60 * 60 * 1000);
+
+                    // Show start time in results
+                    const startHours = startTime.getHours().toString().padStart(2, '0');
+                    const startMinutes = startTime.getMinutes().toString().padStart(2, '0');
+                    const isStartNextDay = startTime.getDate() !== now.getDate();
+                    resultStart.textContent = startHours + ':' + startMinutes + (isStartNextDay ? ' (' + t.nextDay + ')' : '');
+                    resultStartRow.style.display = 'block';
                 }
             } else {
                 startTime = now;
+                endTime = new Date(startTime.getTime() + timeHours * 60 * 60 * 1000);
+                resultStartRow.style.display = 'none';
             }
 
-            const eta = new Date(startTime.getTime() + timeHours * 60 * 60 * 1000);
-            const etaHours = eta.getHours().toString().padStart(2, '0');
-            const etaMinutes = eta.getMinutes().toString().padStart(2, '0');
+            const etaHours = endTime.getHours().toString().padStart(2, '0');
+            const etaMinutes = endTime.getMinutes().toString().padStart(2, '0');
 
             // Show if it's a different day than today
-            const isNextDay = eta.getDate() !== now.getDate();
+            const isNextDay = endTime.getDate() !== now.getDate();
             resultEta.textContent = etaHours + ':' + etaMinutes + (isNextDay ? ' (' + t.nextDay + ')' : '');
 
             // Update details
@@ -1161,8 +1248,18 @@
 
         // Schedule toggle
         scheduleEnabledInput.addEventListener('change', () => {
-            scheduleTimeInput.disabled = !scheduleEnabledInput.checked;
+            scheduleOptionsEl.classList.toggle('active', scheduleEnabledInput.checked);
             calculate();
+        });
+
+        // Schedule mode buttons
+        modeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentScheduleMode = btn.dataset.mode;
+                calculate();
+            });
         });
 
         // Prevent target being less than current
