@@ -278,12 +278,6 @@
             box-shadow: 0 0 0 2px var(--accent);
         }
 
-        .stepper-unit {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
         .presets {
             display: flex;
             gap: 8px;
@@ -739,24 +733,22 @@
             <div class="section-title" data-i18n="settings">Configuración</div>
 
             <div class="input-group">
-                <label class="input-label" data-i18n="batteryCapacity">Capacidad de batería</label>
+                <label class="input-label" data-i18n="batteryCapacity">Capacidad de batería (kWh)</label>
                 <div class="stepper">
                     <button class="stepper-btn" onclick="adjustCapacity(-5)">−</button>
                     <div class="stepper-input">
                         <input type="number" id="batteryCapacity" value="50" min="10" max="200" step="1">
-                        <div class="stepper-unit">kWh</div>
                     </div>
                     <button class="stepper-btn" onclick="adjustCapacity(5)">+</button>
                 </div>
             </div>
 
             <div class="input-group">
-                <label class="input-label" data-i18n="chargerPower">Potencia del cargador</label>
+                <label class="input-label" data-i18n="chargerPower">Potencia del cargador (kW)</label>
                 <div class="stepper">
                     <button class="stepper-btn" onclick="adjustPower(-0.5)">−</button>
                     <div class="stepper-input">
                         <input type="number" id="chargerPower" value="3.7" min="1" max="350" step="0.1">
-                        <div class="stepper-unit">kW</div>
                     </div>
                     <button class="stepper-btn" onclick="adjustPower(0.5)">+</button>
                 </div>
@@ -840,8 +832,8 @@
                 currentCharge: 'Carga actual',
                 targetCharge: 'Carga deseada',
                 settings: 'Configuración',
-                batteryCapacity: 'Capacidad de batería',
-                chargerPower: 'Potencia del cargador',
+                batteryCapacity: 'Capacidad de batería (kWh)',
+                chargerPower: 'Potencia del cargador (kW)',
                 efficiency: 'Eficiencia de carga',
                 scheduleCharging: 'Programar carga',
                 startAt: 'Empezar a las',
@@ -864,8 +856,8 @@
                 currentCharge: 'Current charge',
                 targetCharge: 'Target charge',
                 settings: 'Settings',
-                batteryCapacity: 'Battery capacity',
-                chargerPower: 'Charger power',
+                batteryCapacity: 'Battery capacity (kWh)',
+                chargerPower: 'Charger power (kW)',
                 efficiency: 'Charging efficiency',
                 scheduleCharging: 'Schedule charging',
                 startAt: 'Start at',
@@ -888,8 +880,8 @@
                 currentCharge: 'Charge actuelle',
                 targetCharge: 'Charge souhaitée',
                 settings: 'Configuration',
-                batteryCapacity: 'Capacité de batterie',
-                chargerPower: 'Puissance du chargeur',
+                batteryCapacity: 'Capacité de batterie (kWh)',
+                chargerPower: 'Puissance du chargeur (kW)',
                 efficiency: 'Efficacité de charge',
                 scheduleCharging: 'Programmer la charge',
                 startAt: 'Commencer à',
@@ -912,8 +904,8 @@
                 currentCharge: 'Carica attuale',
                 targetCharge: 'Carica desiderata',
                 settings: 'Impostazioni',
-                batteryCapacity: 'Capacità batteria',
-                chargerPower: 'Potenza caricatore',
+                batteryCapacity: 'Capacità batteria (kWh)',
+                chargerPower: 'Potenza caricatore (kW)',
                 efficiency: 'Efficienza di ricarica',
                 scheduleCharging: 'Programma ricarica',
                 startAt: 'Inizia alle',
@@ -936,8 +928,8 @@
                 currentCharge: 'Carga atual',
                 targetCharge: 'Carga desejada',
                 settings: 'Configuração',
-                batteryCapacity: 'Capacidade da bateria',
-                chargerPower: 'Potência do carregador',
+                batteryCapacity: 'Capacidade da bateria (kWh)',
+                chargerPower: 'Potência do carregador (kW)',
                 efficiency: 'Eficiência de carga',
                 scheduleCharging: 'Programar carregamento',
                 startAt: 'Começar às',
