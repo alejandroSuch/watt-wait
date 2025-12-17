@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -448,6 +448,79 @@
             text-decoration: none;
         }
 
+        .lang-selector {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+        }
+
+        .lang-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-input);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-input);
+            border-radius: 10px;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s;
+            z-index: 100;
+            min-width: 140px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-selector.open .lang-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            padding: 10px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+        }
+
+        .lang-option:hover {
+            background: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .lang-option.active {
+            color: var(--accent);
+            background: rgba(0, 212, 170, 0.1);
+        }
+
+        .container {
+            position: relative;
+        }
+
         @media (min-width: 480px) {
             body {
                 padding: 24px;
@@ -480,18 +553,32 @@
 </head>
 <body>
     <div class="container">
+        <div class="lang-selector" id="langSelector">
+            <button class="lang-btn" id="langBtn">
+                <span id="currentLangFlag">🇪🇸</span>
+                <span id="currentLangCode">ES</span>
+            </button>
+            <div class="lang-dropdown" id="langDropdown">
+                <div class="lang-option" data-lang="es">🇪🇸 Español</div>
+                <div class="lang-option" data-lang="en">🇬🇧 English</div>
+                <div class="lang-option" data-lang="fr">🇫🇷 Français</div>
+                <div class="lang-option" data-lang="it">🇮🇹 Italiano</div>
+                <div class="lang-option" data-lang="pt">🇵🇹 Português</div>
+            </div>
+        </div>
+
         <header>
             <div class="logo">⚡</div>
             <h1>WattWait</h1>
-            <p class="tagline">Calculadora de carga para tu EV</p>
+            <p class="tagline" data-i18n="tagline">Calculadora de carga para tu EV</p>
         </header>
 
         <div class="card">
-            <div class="section-title">Nivel de batería</div>
+            <div class="section-title" data-i18n="batteryLevel">Nivel de batería</div>
 
             <div class="slider-group">
                 <div class="slider-header">
-                    <span class="slider-label">Carga actual</span>
+                    <span class="slider-label" data-i18n="currentCharge">Carga actual</span>
                     <span class="slider-value" id="currentValue">20<span>%</span></span>
                 </div>
                 <input type="range" id="currentCharge" min="0" max="100" value="20">
@@ -499,7 +586,7 @@
 
             <div class="slider-group">
                 <div class="slider-header">
-                    <span class="slider-label">Carga deseada</span>
+                    <span class="slider-label" data-i18n="targetCharge">Carga deseada</span>
                     <span class="slider-value" id="targetValue">80<span>%</span></span>
                 </div>
                 <input type="range" id="targetCharge" min="0" max="100" value="80">
@@ -515,10 +602,10 @@
         </div>
 
         <div class="card">
-            <div class="section-title">Configuración</div>
+            <div class="section-title" data-i18n="settings">Configuración</div>
 
             <div class="input-group">
-                <label class="input-label">Capacidad de batería</label>
+                <label class="input-label" data-i18n="batteryCapacity">Capacidad de batería</label>
                 <div class="stepper">
                     <button class="stepper-btn" onclick="adjustCapacity(-5)">−</button>
                     <div class="stepper-input">
@@ -530,7 +617,7 @@
             </div>
 
             <div class="input-group">
-                <label class="input-label">Potencia del cargador</label>
+                <label class="input-label" data-i18n="chargerPower">Potencia del cargador</label>
                 <div class="stepper">
                     <button class="stepper-btn" onclick="adjustPower(-0.5)">−</button>
                     <div class="stepper-input">
@@ -549,7 +636,7 @@
             </div>
 
             <div class="efficiency-row">
-                <span class="efficiency-label">Eficiencia de carga</span>
+                <span class="efficiency-label" data-i18n="efficiency">Eficiencia de carga</span>
                 <div class="efficiency-value">
                     <input type="number" id="efficiency" value="90" min="50" max="100" step="1">
                     <span>%</span>
@@ -558,22 +645,22 @@
         </div>
 
         <div class="card result-card">
-            <div class="result-label">Tiempo estimado de carga</div>
+            <div class="result-label" data-i18n="estimatedTime">Tiempo estimado de carga</div>
             <div class="result-time" id="resultTime">4<span>h</span> 30<span>min</span></div>
 
             <div class="result-eta">
-                <div class="result-eta-label">Carga completa a las</div>
+                <div class="result-eta-label" data-i18n="readyAt">Carga completa a las</div>
                 <div class="result-eta-time" id="resultEta">14:30</div>
             </div>
 
             <div class="result-details">
                 <div class="detail-item">
                     <div class="detail-value" id="energyNeeded">30.0 kWh</div>
-                    <div class="detail-label">Energía necesaria</div>
+                    <div class="detail-label" data-i18n="energyNeeded">Energía necesaria</div>
                 </div>
                 <div class="detail-item">
                     <div class="detail-value" id="energyFromGrid">33.3 kWh</div>
-                    <div class="detail-label">Consumo de red</div>
+                    <div class="detail-label" data-i18n="gridConsumption">Consumo de red</div>
                 </div>
             </div>
 
@@ -583,25 +670,138 @@
             </div>
         </div>
 
-        <footer>
+        <footer data-i18n="footer">
             Hecho con ⚡ para conductores de EV
         </footer>
     </div>
 
     <script>
-        // Storage key
+        // ==================== TRANSLATIONS ====================
+        const translations = {
+            es: {
+                tagline: 'Calculadora de carga para tu EV',
+                batteryLevel: 'Nivel de batería',
+                currentCharge: 'Carga actual',
+                targetCharge: 'Carga deseada',
+                settings: 'Configuración',
+                batteryCapacity: 'Capacidad de batería',
+                chargerPower: 'Potencia del cargador',
+                efficiency: 'Eficiencia de carga',
+                estimatedTime: 'Tiempo estimado de carga',
+                readyAt: 'Carga completa a las',
+                energyNeeded: 'Energía necesaria',
+                gridConsumption: 'Consumo de red',
+                footer: 'Hecho con ⚡ para conductores de EV',
+                warningAlreadyCharged: 'La carga actual ya es igual o superior a la deseada',
+                warningLongCharge: 'La carga tardará más de 12 horas. Considera un cargador más potente.',
+                nextDay: '+1 día',
+                hours: 'h',
+                minutes: 'min'
+            },
+            en: {
+                tagline: 'Charging calculator for your EV',
+                batteryLevel: 'Battery level',
+                currentCharge: 'Current charge',
+                targetCharge: 'Target charge',
+                settings: 'Settings',
+                batteryCapacity: 'Battery capacity',
+                chargerPower: 'Charger power',
+                efficiency: 'Charging efficiency',
+                estimatedTime: 'Estimated charging time',
+                readyAt: 'Fully charged at',
+                energyNeeded: 'Energy needed',
+                gridConsumption: 'Grid consumption',
+                footer: 'Made with ⚡ for EV drivers',
+                warningAlreadyCharged: 'Current charge is already equal or higher than target',
+                warningLongCharge: 'Charging will take more than 12 hours. Consider a more powerful charger.',
+                nextDay: '+1 day',
+                hours: 'h',
+                minutes: 'min'
+            },
+            fr: {
+                tagline: 'Calculateur de charge pour votre VE',
+                batteryLevel: 'Niveau de batterie',
+                currentCharge: 'Charge actuelle',
+                targetCharge: 'Charge souhaitée',
+                settings: 'Configuration',
+                batteryCapacity: 'Capacité de batterie',
+                chargerPower: 'Puissance du chargeur',
+                efficiency: 'Efficacité de charge',
+                estimatedTime: 'Temps de charge estimé',
+                readyAt: 'Charge complète à',
+                energyNeeded: 'Énergie nécessaire',
+                gridConsumption: 'Consommation réseau',
+                footer: 'Fait avec ⚡ pour les conducteurs de VE',
+                warningAlreadyCharged: 'La charge actuelle est déjà égale ou supérieure à la cible',
+                warningLongCharge: 'La charge prendra plus de 12 heures. Envisagez un chargeur plus puissant.',
+                nextDay: '+1 jour',
+                hours: 'h',
+                minutes: 'min'
+            },
+            it: {
+                tagline: 'Calcolatore di ricarica per il tuo EV',
+                batteryLevel: 'Livello batteria',
+                currentCharge: 'Carica attuale',
+                targetCharge: 'Carica desiderata',
+                settings: 'Impostazioni',
+                batteryCapacity: 'Capacità batteria',
+                chargerPower: 'Potenza caricatore',
+                efficiency: 'Efficienza di ricarica',
+                estimatedTime: 'Tempo di ricarica stimato',
+                readyAt: 'Ricarica completa alle',
+                energyNeeded: 'Energia necessaria',
+                gridConsumption: 'Consumo dalla rete',
+                footer: 'Fatto con ⚡ per i conducenti di EV',
+                warningAlreadyCharged: 'La carica attuale è già uguale o superiore a quella desiderata',
+                warningLongCharge: 'La ricarica richiederà più di 12 ore. Considera un caricatore più potente.',
+                nextDay: '+1 giorno',
+                hours: 'h',
+                minutes: 'min'
+            },
+            pt: {
+                tagline: 'Calculadora de carregamento para seu VE',
+                batteryLevel: 'Nível da bateria',
+                currentCharge: 'Carga atual',
+                targetCharge: 'Carga desejada',
+                settings: 'Configuração',
+                batteryCapacity: 'Capacidade da bateria',
+                chargerPower: 'Potência do carregador',
+                efficiency: 'Eficiência de carga',
+                estimatedTime: 'Tempo estimado de carregamento',
+                readyAt: 'Carga completa às',
+                energyNeeded: 'Energia necessária',
+                gridConsumption: 'Consumo da rede',
+                footer: 'Feito com ⚡ para motoristas de VE',
+                warningAlreadyCharged: 'A carga atual já é igual ou superior à desejada',
+                warningLongCharge: 'O carregamento levará mais de 12 horas. Considere um carregador mais potente.',
+                nextDay: '+1 dia',
+                hours: 'h',
+                minutes: 'min'
+            }
+        };
+
+        const langMeta = {
+            es: { flag: '🇪🇸', code: 'ES' },
+            en: { flag: '🇬🇧', code: 'EN' },
+            fr: { flag: '🇫🇷', code: 'FR' },
+            it: { flag: '🇮🇹', code: 'IT' },
+            pt: { flag: '🇵🇹', code: 'PT' }
+        };
+
+        let currentLang = 'es';
+
+        // ==================== STORAGE ====================
         const STORAGE_KEY = 'wattwait_settings';
 
-        // Default values
         const DEFAULTS = {
             currentCharge: 20,
             targetCharge: 80,
             batteryCapacity: 50,
             chargerPower: 3.7,
-            efficiency: 90
+            efficiency: 90,
+            lang: null // null = auto-detect
         };
 
-        // Load settings from localStorage
         function loadSettings() {
             try {
                 const saved = localStorage.getItem(STORAGE_KEY);
@@ -614,7 +814,6 @@
             return DEFAULTS;
         }
 
-        // Save settings to localStorage
         function saveSettings() {
             try {
                 const settings = {
@@ -622,7 +821,8 @@
                     targetCharge: parseInt(targetChargeSlider.value),
                     batteryCapacity: parseFloat(batteryCapacityInput.value),
                     chargerPower: parseFloat(chargerPowerInput.value),
-                    efficiency: parseInt(efficiencyInput.value)
+                    efficiency: parseInt(efficiencyInput.value),
+                    lang: currentLang
                 };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
             } catch (e) {
@@ -630,7 +830,46 @@
             }
         }
 
-        // DOM Elements
+        // ==================== i18n ====================
+        function detectBrowserLanguage() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            const shortLang = browserLang.split('-')[0].toLowerCase();
+            return translations[shortLang] ? shortLang : 'en';
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('html-root').setAttribute('lang', lang);
+
+            // Update all translatable elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Update language selector button
+            document.getElementById('currentLangFlag').textContent = langMeta[lang].flag;
+            document.getElementById('currentLangCode').textContent = langMeta[lang].code;
+
+            // Update active state in dropdown
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+
+            // Recalculate to update dynamic texts
+            calculate();
+            saveSettings();
+        }
+
+        function initLanguage() {
+            const settings = loadSettings();
+            const lang = settings.lang || detectBrowserLanguage();
+            setLanguage(lang);
+        }
+
+        // ==================== DOM Elements ====================
         const currentChargeSlider = document.getElementById('currentCharge');
         const targetChargeSlider = document.getElementById('targetCharge');
         const currentValueDisplay = document.getElementById('currentValue');
@@ -656,8 +895,7 @@
             efficiencyInput.value = settings.efficiency;
         }
 
-        // Initialize with saved settings
-        applySettings(loadSettings());
+        // Settings will be applied during initialization at the end
 
         // Update battery visual
         function updateBatteryVisual() {
@@ -698,14 +936,15 @@
             const minutes = Math.round((timeHours - hours) * 60);
 
             // Format time display
+            const t = translations[currentLang];
             if (chargeNeeded === 0) {
-                resultTime.innerHTML = '0<span>min</span>';
+                resultTime.innerHTML = '0<span>' + t.minutes + '</span>';
             } else if (hours === 0) {
-                resultTime.innerHTML = minutes + '<span>min</span>';
+                resultTime.innerHTML = minutes + '<span>' + t.minutes + '</span>';
             } else if (minutes === 0) {
-                resultTime.innerHTML = hours + '<span>h</span>';
+                resultTime.innerHTML = hours + '<span>' + t.hours + '</span>';
             } else {
-                resultTime.innerHTML = hours + '<span>h</span> ' + minutes + '<span>min</span>';
+                resultTime.innerHTML = hours + '<span>' + t.hours + '</span> ' + minutes + '<span>' + t.minutes + '</span>';
             }
 
             // Calculate ETA
@@ -716,7 +955,7 @@
 
             // Show if it's tomorrow
             const isNextDay = eta.getDate() !== now.getDate();
-            resultEta.textContent = etaHours + ':' + etaMinutes + (isNextDay ? ' (+1 día)' : '');
+            resultEta.textContent = etaHours + ':' + etaMinutes + (isNextDay ? ' (' + t.nextDay + ')' : '');
 
             // Update details
             energyNeeded.textContent = energyNeededKwh.toFixed(1) + ' kWh';
@@ -726,10 +965,10 @@
             warningMessage.classList.remove('show');
 
             if (currentCharge >= targetCharge) {
-                warningText.textContent = 'La carga actual ya es igual o superior a la deseada';
+                warningText.textContent = t.warningAlreadyCharged;
                 warningMessage.classList.add('show');
             } else if (timeHours > 12) {
-                warningText.textContent = 'La carga tardará más de 12 horas. Considera un cargador más potente.';
+                warningText.textContent = t.warningLongCharge;
                 warningMessage.classList.add('show');
             }
 
@@ -797,8 +1036,34 @@
             }
         });
 
-        // Initial calculation
-        calculate();
+        // ==================== Language Selector ====================
+        const langSelector = document.getElementById('langSelector');
+        const langBtn = document.getElementById('langBtn');
+
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langSelector.classList.toggle('open');
+        });
+
+        document.querySelectorAll('.lang-option').forEach(option => {
+            option.addEventListener('click', () => {
+                setLanguage(option.dataset.lang);
+                langSelector.classList.remove('open');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            langSelector.classList.remove('open');
+        });
+
+        // ==================== Initialization ====================
+        // Apply saved settings first (before language init)
+        const savedSettings = loadSettings();
+        applySettings(savedSettings);
+
+        // Initialize language (this will also call calculate)
+        initLanguage();
 
         // Register service worker for PWA (optional enhancement)
         if ('serviceWorker' in navigator) {
