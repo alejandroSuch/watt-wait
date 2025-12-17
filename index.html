@@ -329,10 +329,26 @@
             box-shadow: 0 0 0 2px var(--accent);
         }
 
+        .presets-group {
+            margin-top: 12px;
+        }
+
+        .presets-group + .presets-group {
+            margin-top: 8px;
+        }
+
+        .presets-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
         .presets {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
             flex-wrap: wrap;
         }
 
@@ -804,12 +820,25 @@
                     </div>
                     <button class="stepper-btn" onclick="adjustPower(0.5)">+</button>
                 </div>
-                <div class="presets">
-                    <button class="preset-btn" onclick="setPower(2.3)">2.3</button>
-                    <button class="preset-btn active" onclick="setPower(3.7)">3.7</button>
-                    <button class="preset-btn" onclick="setPower(7.4)">7.4</button>
-                    <button class="preset-btn" onclick="setPower(11)">11</button>
-                    <button class="preset-btn" onclick="setPower(22)">22</button>
+                <div class="presets-group">
+                    <div class="presets-label">AC</div>
+                    <div class="presets">
+                        <button class="preset-btn" onclick="setPower(2.3)">2.3</button>
+                        <button class="preset-btn active" onclick="setPower(3.7)">3.7</button>
+                        <button class="preset-btn" onclick="setPower(7.4)">7.4</button>
+                        <button class="preset-btn" onclick="setPower(11)">11</button>
+                        <button class="preset-btn" onclick="setPower(22)">22</button>
+                    </div>
+                </div>
+                <div class="presets-group">
+                    <div class="presets-label">DC</div>
+                    <div class="presets">
+                        <button class="preset-btn" onclick="setPower(50)">50</button>
+                        <button class="preset-btn" onclick="setPower(100)">100</button>
+                        <button class="preset-btn" onclick="setPower(150)">150</button>
+                        <button class="preset-btn" onclick="setPower(250)">250</button>
+                        <button class="preset-btn" onclick="setPower(350)">350</button>
+                    </div>
                 </div>
             </div>
 
@@ -1282,11 +1311,11 @@
         // Update preset buttons active state
         function updatePresetButtons() {
             const currentPower = parseFloat(chargerPowerInput.value);
-            const presets = [2.3, 3.7, 7.4, 11, 22];
             const buttons = document.querySelectorAll('.preset-btn');
 
-            buttons.forEach((btn, index) => {
-                if (presets[index] === currentPower) {
+            buttons.forEach(btn => {
+                const btnValue = parseFloat(btn.textContent);
+                if (btnValue === currentPower) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');

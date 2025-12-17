@@ -15,6 +15,8 @@ Calculadora de tiempo de carga para coches eléctricos.
 
 ## Presets de potencia
 
+### AC (Carga lenta/semi-rápida)
+
 | Potencia | Tipo de cargador |
 |----------|------------------|
 | 2.3 kW   | Enchufe doméstico |
@@ -22,6 +24,16 @@ Calculadora de tiempo de carga para coches eléctricos.
 | 7.4 kW   | Wallbox monofásico |
 | 11 kW    | Wallbox trifásico |
 | 22 kW    | Wallbox trifásico |
+
+### DC (Carga rápida)
+
+| Potencia | Tipo de cargador |
+|----------|------------------|
+| 50 kW    | CCS/CHAdeMO básico |
+| 100 kW   | CCS estándar |
+| 150 kW   | CCS alta potencia |
+| 250 kW   | Tesla Supercharger V3 |
+| 350 kW   | Ionity / CCS ultrarrápido |
 
 ## Instalación como app
 
