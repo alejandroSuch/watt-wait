@@ -8,7 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>WattWait - Calculadora de Carga EV</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
     <style>
         * {
             margin: 0;
@@ -1304,10 +1306,12 @@
         // Initialize language (this will also call calculate)
         initLanguage();
 
-        // Register service worker for PWA (optional enhancement)
+        // Register service worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // Service worker would go here for offline support
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW registration failed:', err));
             });
         }
     </script>
