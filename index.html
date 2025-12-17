@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="Calcula el tiempo de carga de tu coche eléctrico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>WattWait - Calculadora de Carga EV</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-input: #252542;
+            --accent: #00d4aa;
+            --accent-glow: rgba(0, 212, 170, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --text-muted: #6a6a7a;
+            --warning: #ffaa00;
+            --danger: #ff5555;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0 30px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 20px var(--accent-glow));
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), #00a8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--text-muted), transparent);
+        }
+
+        .slider-group {
+            margin-bottom: 24px;
+        }
+
+        .slider-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .slider-label {
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+
+        .slider-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .slider-value span {
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-input);
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--accent-glow);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.15);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .battery-visual {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .battery-bar {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-input);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .battery-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .battery-current {
+            background: linear-gradient(90deg, #ff5555, #ffaa00, #00d4aa);
+            background-size: 300% 100%;
+        }
+
+        .battery-target {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: rgba(0, 212, 170, 0.2);
+            border-right: 3px dashed var(--accent);
+        }
+
+        .battery-tip {
+            width: 6px;
+            height: 12px;
+            background: var(--text-muted);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stepper-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            border: none;
+            background: var(--bg-input);
+            color: var(--accent);
+            font-size: 24px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stepper-btn:active {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: scale(0.95);
+        }
+
+        .stepper-input {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stepper-input input {
+            width: 100%;
+            background: var(--bg-input);
+            border: none;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            outline: none;
+        }
+
+        .stepper-input input:focus {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .stepper-unit {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .presets {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            flex: 1;
+            min-width: calc(25% - 6px);
+            padding: 10px 8px;
+            border-radius: 10px;
+            border: 1px solid var(--bg-input);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:active,
+        .preset-btn.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .efficiency-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .efficiency-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .efficiency-value {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .efficiency-value input {
+            width: 60px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent);
+            text-align: center;
+            outline: none;
+        }
+
+        .efficiency-value span {
+            color: var(--text-muted);
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #1a2a3a 0%, #1a1a2e 100%);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            text-align: center;
+            padding: 32px 24px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .result-time {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.1;
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .result-time span {
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--text-secondary);
+        }
+
+        .result-eta {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--bg-input);
+        }
+
+        .result-eta-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .result-eta-time {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .result-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--bg-input);
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .detail-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .warning-message {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            border-radius: 12px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--warning);
+        }
+
+        .warning-message.show {
+            display: flex;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px 0;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        @media (min-width: 480px) {
+            body {
+                padding: 24px;
+            }
+
+            .card {
+                padding: 28px;
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg-primary: #f0f2f5;
+                --bg-card: #ffffff;
+                --bg-input: #e8eaed;
+                --text-primary: #1a1a2e;
+                --text-secondary: #5a5a6a;
+                --text-muted: #8a8a9a;
+            }
+
+            .result-card {
+                background: linear-gradient(135deg, #e8f5f0 0%, #ffffff 100%);
+            }
+
+            input[type="range"] {
+                background: #d0d2d5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">⚡</div>
+            <h1>WattWait</h1>
+            <p class="tagline">Calculadora de carga para tu EV</p>
+        </header>
+
+        <div class="card">
+            <div class="section-title">Nivel de batería</div>
+
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span class="slider-label">Carga actual</span>
+                    <span class="slider-value" id="currentValue">20<span>%</span></span>
+                </div>
+                <input type="range" id="currentCharge" min="0" max="100" value="20">
+            </div>
+
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span class="slider-label">Carga deseada</span>
+                    <span class="slider-value" id="targetValue">80<span>%</span></span>
+                </div>
+                <input type="range" id="targetCharge" min="0" max="100" value="80">
+            </div>
+
+            <div class="battery-visual">
+                <div class="battery-bar">
+                    <div class="battery-target" id="batteryTarget"></div>
+                    <div class="battery-fill battery-current" id="batteryFill"></div>
+                </div>
+                <div class="battery-tip"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-title">Configuración</div>
+
+            <div class="input-group">
+                <label class="input-label">Capacidad de batería</label>
+                <div class="stepper">
+                    <button class="stepper-btn" onclick="adjustCapacity(-5)">−</button>
+                    <div class="stepper-input">
+                        <input type="number" id="batteryCapacity" value="50" min="10" max="200" step="1">
+                        <div class="stepper-unit">kWh</div>
+                    </div>
+                    <button class="stepper-btn" onclick="adjustCapacity(5)">+</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Potencia del cargador</label>
+                <div class="stepper">
+                    <button class="stepper-btn" onclick="adjustPower(-0.5)">−</button>
+                    <div class="stepper-input">
+                        <input type="number" id="chargerPower" value="3.7" min="1" max="350" step="0.1">
+                        <div class="stepper-unit">kW</div>
+                    </div>
+                    <button class="stepper-btn" onclick="adjustPower(0.5)">+</button>
+                </div>
+                <div class="presets">
+                    <button class="preset-btn" onclick="setPower(2.3)">2.3</button>
+                    <button class="preset-btn active" onclick="setPower(3.7)">3.7</button>
+                    <button class="preset-btn" onclick="setPower(7.4)">7.4</button>
+                    <button class="preset-btn" onclick="setPower(11)">11</button>
+                    <button class="preset-btn" onclick="setPower(22)">22</button>
+                </div>
+            </div>
+
+            <div class="efficiency-row">
+                <span class="efficiency-label">Eficiencia de carga</span>
+                <div class="efficiency-value">
+                    <input type="number" id="efficiency" value="90" min="50" max="100" step="1">
+                    <span>%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card result-card">
+            <div class="result-label">Tiempo estimado de carga</div>
+            <div class="result-time" id="resultTime">4<span>h</span> 30<span>min</span></div>
+
+            <div class="result-eta">
+                <div class="result-eta-label">Carga completa a las</div>
+                <div class="result-eta-time" id="resultEta">14:30</div>
+            </div>
+
+            <div class="result-details">
+                <div class="detail-item">
+                    <div class="detail-value" id="energyNeeded">30.0 kWh</div>
+                    <div class="detail-label">Energía necesaria</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="energyFromGrid">33.3 kWh</div>
+                    <div class="detail-label">Consumo de red</div>
+                </div>
+            </div>
+
+            <div class="warning-message" id="warningMessage">
+                <span>⚠️</span>
+                <span id="warningText"></span>
+            </div>
+        </div>
+
+        <footer>
+            Hecho con ⚡ para conductores de EV
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const currentChargeSlider = document.getElementById('currentCharge');
+        const targetChargeSlider = document.getElementById('targetCharge');
+        const currentValueDisplay = document.getElementById('currentValue');
+        const targetValueDisplay = document.getElementById('targetValue');
+        const batteryCapacityInput = document.getElementById('batteryCapacity');
+        const chargerPowerInput = document.getElementById('chargerPower');
+        const efficiencyInput = document.getElementById('efficiency');
+        const batteryFill = document.getElementById('batteryFill');
+        const batteryTarget = document.getElementById('batteryTarget');
+        const resultTime = document.getElementById('resultTime');
+        const resultEta = document.getElementById('resultEta');
+        const energyNeeded = document.getElementById('energyNeeded');
+        const energyFromGrid = document.getElementById('energyFromGrid');
+        const warningMessage = document.getElementById('warningMessage');
+        const warningText = document.getElementById('warningText');
+
+        // Update battery visual
+        function updateBatteryVisual() {
+            const current = parseInt(currentChargeSlider.value);
+            const target = parseInt(targetChargeSlider.value);
+
+            batteryFill.style.width = current + '%';
+            batteryTarget.style.width = target + '%';
+
+            // Update gradient position based on charge level
+            const gradientPos = 100 - current;
+            batteryFill.style.backgroundPosition = gradientPos + '% 0';
+        }
+
+        // Calculate and display results
+        function calculate() {
+            const currentCharge = parseInt(currentChargeSlider.value);
+            const targetCharge = parseInt(targetChargeSlider.value);
+            const capacity = parseFloat(batteryCapacityInput.value) || 50;
+            const power = parseFloat(chargerPowerInput.value) || 3.7;
+            const efficiency = (parseFloat(efficiencyInput.value) || 90) / 100;
+
+            // Update displays
+            currentValueDisplay.innerHTML = currentCharge + '<span>%</span>';
+            targetValueDisplay.innerHTML = targetCharge + '<span>%</span>';
+
+            // Update battery visual
+            updateBatteryVisual();
+
+            // Calculate energy needed
+            const chargeNeeded = Math.max(0, targetCharge - currentCharge);
+            const energyNeededKwh = (chargeNeeded / 100) * capacity;
+            const energyFromGridKwh = energyNeededKwh / efficiency;
+
+            // Calculate time
+            const timeHours = energyFromGridKwh / power;
+            const hours = Math.floor(timeHours);
+            const minutes = Math.round((timeHours - hours) * 60);
+
+            // Format time display
+            if (chargeNeeded === 0) {
+                resultTime.innerHTML = '0<span>min</span>';
+            } else if (hours === 0) {
+                resultTime.innerHTML = minutes + '<span>min</span>';
+            } else if (minutes === 0) {
+                resultTime.innerHTML = hours + '<span>h</span>';
+            } else {
+                resultTime.innerHTML = hours + '<span>h</span> ' + minutes + '<span>min</span>';
+            }
+
+            // Calculate ETA
+            const now = new Date();
+            const eta = new Date(now.getTime() + timeHours * 60 * 60 * 1000);
+            const etaHours = eta.getHours().toString().padStart(2, '0');
+            const etaMinutes = eta.getMinutes().toString().padStart(2, '0');
+
+            // Show if it's tomorrow
+            const isNextDay = eta.getDate() !== now.getDate();
+            resultEta.textContent = etaHours + ':' + etaMinutes + (isNextDay ? ' (+1 día)' : '');
+
+            // Update details
+            energyNeeded.textContent = energyNeededKwh.toFixed(1) + ' kWh';
+            energyFromGrid.textContent = energyFromGridKwh.toFixed(1) + ' kWh';
+
+            // Warnings
+            warningMessage.classList.remove('show');
+
+            if (currentCharge >= targetCharge) {
+                warningText.textContent = 'La carga actual ya es igual o superior a la deseada';
+                warningMessage.classList.add('show');
+            } else if (timeHours > 12) {
+                warningText.textContent = 'La carga tardará más de 12 horas. Considera un cargador más potente.';
+                warningMessage.classList.add('show');
+            }
+
+            // Update active preset button
+            updatePresetButtons();
+        }
+
+        // Adjust capacity with stepper buttons
+        function adjustCapacity(delta) {
+            const current = parseFloat(batteryCapacityInput.value) || 50;
+            const newValue = Math.max(10, Math.min(200, current + delta));
+            batteryCapacityInput.value = newValue;
+            calculate();
+        }
+
+        // Adjust power with stepper buttons
+        function adjustPower(delta) {
+            const current = parseFloat(chargerPowerInput.value) || 3.7;
+            const newValue = Math.max(1, Math.min(350, Math.round((current + delta) * 10) / 10));
+            chargerPowerInput.value = newValue;
+            calculate();
+        }
+
+        // Set power from preset
+        function setPower(value) {
+            chargerPowerInput.value = value;
+            calculate();
+        }
+
+        // Update preset buttons active state
+        function updatePresetButtons() {
+            const currentPower = parseFloat(chargerPowerInput.value);
+            const presets = [2.3, 3.7, 7.4, 11, 22];
+            const buttons = document.querySelectorAll('.preset-btn');
+
+            buttons.forEach((btn, index) => {
+                if (presets[index] === currentPower) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Event listeners
+        currentChargeSlider.addEventListener('input', calculate);
+        targetChargeSlider.addEventListener('input', calculate);
+        batteryCapacityInput.addEventListener('input', calculate);
+        chargerPowerInput.addEventListener('input', calculate);
+        efficiencyInput.addEventListener('input', calculate);
+
+        // Prevent target being less than current
+        currentChargeSlider.addEventListener('input', () => {
+            if (parseInt(currentChargeSlider.value) > parseInt(targetChargeSlider.value)) {
+                targetChargeSlider.value = currentChargeSlider.value;
+            }
+        });
+
+        targetChargeSlider.addEventListener('input', () => {
+            if (parseInt(targetChargeSlider.value) < parseInt(currentChargeSlider.value)) {
+                currentChargeSlider.value = targetChargeSlider.value;
+            }
+        });
+
+        // Initial calculation
+        calculate();
+
+        // Register service worker for PWA (optional enhancement)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Service worker would go here for offline support
+            });
+        }
+    </script>
+</body>
+</html>
