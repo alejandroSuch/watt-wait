@@ -3,14 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#1a1a2e">
-    <meta name="description" content="Calcula el tiempo de carga de tu coche eléctrico">
+    <meta name="theme-color" content="#0f0f1a">
+    <meta name="description" content="Calculadora gratuita para saber cuánto tiempo necesita tu coche eléctrico para cargar. Configura batería, potencia del cargador y programa la hora de carga.">
+    <meta name="keywords" content="calculadora carga coche eléctrico, EV charging calculator, tiempo carga batería, wallbox, cargador eléctrico, kWh, programar carga">
+    <meta name="author" content="WattWait">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://alejandrosuch.github.io/watt-wait/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://alejandrosuch.github.io/watt-wait/">
+    <meta property="og:title" content="WattWait - Calculadora de Carga para Coches Eléctricos">
+    <meta property="og:description" content="Calcula el tiempo de carga de tu coche eléctrico. Configura batería, potencia y programa cuándo quieres tenerlo listo.">
+    <meta property="og:image" content="https://alejandrosuch.github.io/watt-wait/icons/icon-512.png">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:locale:alternate" content="en_GB">
+    <meta property="og:locale:alternate" content="fr_FR">
+    <meta property="og:locale:alternate" content="it_IT">
+    <meta property="og:locale:alternate" content="pt_PT">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="https://alejandrosuch.github.io/watt-wait/">
+    <meta name="twitter:title" content="WattWait - Calculadora de Carga EV">
+    <meta name="twitter:description" content="Calcula el tiempo de carga de tu coche eléctrico. Configura batería, potencia y programa cuándo quieres tenerlo listo.">
+    <meta name="twitter:image" content="https://alejandrosuch.github.io/watt-wait/icons/icon-512.png">
+
+    <!-- PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>WattWait - Calculadora de Carga EV</title>
+    <meta name="apple-mobile-web-app-title" content="WattWait">
+    <meta name="application-name" content="WattWait">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <title>WattWait - Calculadora de Carga EV | Tiempo de carga coche eléctrico</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "WattWait",
+        "description": "Calculadora gratuita para saber cuánto tiempo necesita tu coche eléctrico para cargar",
+        "url": "https://alejandrosuch.github.io/watt-wait/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+        },
+        "inLanguage": ["es", "en", "fr", "it", "pt"],
+        "browserRequirements": "Requires JavaScript",
+        "softwareVersion": "1.0",
+        "screenshot": "https://alejandrosuch.github.io/watt-wait/icons/icon-512.png"
+    }
+    </script>
     <style>
         * {
             margin: 0;

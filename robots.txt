@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://alejandrosuch.github.io/watt-wait/sitemap.xml
