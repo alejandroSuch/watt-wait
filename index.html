@@ -589,6 +589,47 @@
     </div>
 
     <script>
+        // Storage key
+        const STORAGE_KEY = 'wattwait_settings';
+
+        // Default values
+        const DEFAULTS = {
+            currentCharge: 20,
+            targetCharge: 80,
+            batteryCapacity: 50,
+            chargerPower: 3.7,
+            efficiency: 90
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return { ...DEFAULTS, ...JSON.parse(saved) };
+                }
+            } catch (e) {
+                console.warn('Error loading settings:', e);
+            }
+            return DEFAULTS;
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            try {
+                const settings = {
+                    currentCharge: parseInt(currentChargeSlider.value),
+                    targetCharge: parseInt(targetChargeSlider.value),
+                    batteryCapacity: parseFloat(batteryCapacityInput.value),
+                    chargerPower: parseFloat(chargerPowerInput.value),
+                    efficiency: parseInt(efficiencyInput.value)
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+            } catch (e) {
+                console.warn('Error saving settings:', e);
+            }
+        }
+
         // DOM Elements
         const currentChargeSlider = document.getElementById('currentCharge');
         const targetChargeSlider = document.getElementById('targetCharge');
@@ -605,6 +646,18 @@
         const energyFromGrid = document.getElementById('energyFromGrid');
         const warningMessage = document.getElementById('warningMessage');
         const warningText = document.getElementById('warningText');
+
+        // Apply loaded settings to inputs
+        function applySettings(settings) {
+            currentChargeSlider.value = settings.currentCharge;
+            targetChargeSlider.value = settings.targetCharge;
+            batteryCapacityInput.value = settings.batteryCapacity;
+            chargerPowerInput.value = settings.chargerPower;
+            efficiencyInput.value = settings.efficiency;
+        }
+
+        // Initialize with saved settings
+        applySettings(loadSettings());
 
         // Update battery visual
         function updateBatteryVisual() {
@@ -682,6 +735,9 @@
 
             // Update active preset button
             updatePresetButtons();
+
+            // Save to localStorage
+            saveSettings();
         }
 
         // Adjust capacity with stepper buttons
