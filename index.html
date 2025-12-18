@@ -631,6 +631,40 @@
             display: flex;
         }
 
+        .share-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px 20px;
+            background: var(--bg-input);
+            border: 1px solid var(--text-muted);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .share-btn:active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-primary);
+            transform: scale(0.98);
+        }
+
+        .share-btn svg {
+            flex-shrink: 0;
+        }
+
         footer {
             text-align: center;
             padding: 24px 0;
@@ -750,16 +784,16 @@
 <body>
     <div class="container">
         <div class="lang-selector" id="langSelector">
-            <button class="lang-btn" id="langBtn">
-                <span id="currentLangFlag">🇪🇸</span>
+            <button class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false" aria-label="Seleccionar idioma">
+                <span id="currentLangFlag" aria-hidden="true">🇪🇸</span>
                 <span id="currentLangCode">ES</span>
             </button>
-            <div class="lang-dropdown" id="langDropdown">
-                <div class="lang-option" data-lang="es">🇪🇸 Español</div>
-                <div class="lang-option" data-lang="en">🇬🇧 English</div>
-                <div class="lang-option" data-lang="fr">🇫🇷 Français</div>
-                <div class="lang-option" data-lang="it">🇮🇹 Italiano</div>
-                <div class="lang-option" data-lang="pt">🇵🇹 Português</div>
+            <div class="lang-dropdown" id="langDropdown" role="listbox" aria-label="Idiomas disponibles">
+                <div class="lang-option" data-lang="es" role="option" tabindex="0">🇪🇸 Español</div>
+                <div class="lang-option" data-lang="en" role="option" tabindex="0">🇬🇧 English</div>
+                <div class="lang-option" data-lang="fr" role="option" tabindex="0">🇫🇷 Français</div>
+                <div class="lang-option" data-lang="it" role="option" tabindex="0">🇮🇹 Italiano</div>
+                <div class="lang-option" data-lang="pt" role="option" tabindex="0">🇵🇹 Português</div>
             </div>
         </div>
 
@@ -774,21 +808,21 @@
 
             <div class="slider-group">
                 <div class="slider-header">
-                    <span class="slider-label" data-i18n="currentCharge">Carga actual</span>
-                    <span class="slider-value" id="currentValue">20<span>%</span></span>
+                    <label class="slider-label" for="currentCharge" data-i18n="currentCharge">Carga actual</label>
+                    <span class="slider-value" id="currentValue" aria-live="polite">20<span>%</span></span>
                 </div>
-                <input type="range" id="currentCharge" min="0" max="100" value="20">
+                <input type="range" id="currentCharge" min="0" max="100" value="20" aria-describedby="currentValue">
             </div>
 
             <div class="slider-group">
                 <div class="slider-header">
-                    <span class="slider-label" data-i18n="targetCharge">Carga deseada</span>
-                    <span class="slider-value" id="targetValue">80<span>%</span></span>
+                    <label class="slider-label" for="targetCharge" data-i18n="targetCharge">Carga deseada</label>
+                    <span class="slider-value" id="targetValue" aria-live="polite">80<span>%</span></span>
                 </div>
-                <input type="range" id="targetCharge" min="0" max="100" value="80">
+                <input type="range" id="targetCharge" min="0" max="100" value="80" aria-describedby="targetValue">
             </div>
 
-            <div class="battery-visual">
+            <div class="battery-visual" role="img" aria-label="Visualización del nivel de batería">
                 <div class="battery-bar">
                     <div class="battery-target" id="batteryTarget"></div>
                     <div class="battery-fill battery-current" id="batteryFill"></div>
@@ -801,102 +835,113 @@
             <div class="section-title" data-i18n="settings">Configuración</div>
 
             <div class="input-group">
-                <label class="input-label" data-i18n="batteryCapacity">Capacidad de batería (kWh)</label>
-                <div class="stepper">
-                    <button class="stepper-btn" onclick="adjustCapacity(-5)">−</button>
+                <label class="input-label" for="batteryCapacity" data-i18n="batteryCapacity">Capacidad de batería (kWh)</label>
+                <div class="stepper" role="group" aria-label="Control de capacidad de batería">
+                    <button class="stepper-btn" onclick="adjustCapacity(-5)" aria-label="Reducir 5 kWh">−</button>
                     <div class="stepper-input">
-                        <input type="number" id="batteryCapacity" value="50" min="10" max="200" step="1">
+                        <input type="number" id="batteryCapacity" value="50" min="10" max="200" step="1" aria-label="Capacidad de batería en kWh">
                     </div>
-                    <button class="stepper-btn" onclick="adjustCapacity(5)">+</button>
+                    <button class="stepper-btn" onclick="adjustCapacity(5)" aria-label="Aumentar 5 kWh">+</button>
                 </div>
             </div>
 
             <div class="input-group">
-                <label class="input-label" data-i18n="chargerPower">Potencia del cargador (kW)</label>
-                <div class="stepper">
-                    <button class="stepper-btn" onclick="adjustPower(-0.5)">−</button>
+                <label class="input-label" for="chargerPower" data-i18n="chargerPower">Potencia del cargador (kW)</label>
+                <div class="stepper" role="group" aria-label="Control de potencia del cargador">
+                    <button class="stepper-btn" onclick="adjustPower(-0.5)" aria-label="Reducir 0.5 kW">−</button>
                     <div class="stepper-input">
-                        <input type="number" id="chargerPower" value="3.7" min="1" max="350" step="0.1">
+                        <input type="number" id="chargerPower" value="3.7" min="1" max="350" step="0.1" aria-label="Potencia del cargador en kW">
                     </div>
-                    <button class="stepper-btn" onclick="adjustPower(0.5)">+</button>
+                    <button class="stepper-btn" onclick="adjustPower(0.5)" aria-label="Aumentar 0.5 kW">+</button>
                 </div>
-                <div class="presets-group">
-                    <div class="presets-label">AC</div>
-                    <div class="presets">
-                        <button class="preset-btn" onclick="setPower(2.3)">2.3</button>
-                        <button class="preset-btn active" onclick="setPower(3.7)">3.7</button>
-                        <button class="preset-btn" onclick="setPower(7.4)">7.4</button>
-                        <button class="preset-btn" onclick="setPower(11)">11</button>
-                        <button class="preset-btn" onclick="setPower(22)">22</button>
+                <div class="presets-group" role="group" aria-label="Presets de carga AC">
+                    <div class="presets-label" id="ac-presets-label">AC</div>
+                    <div class="presets" role="radiogroup" aria-labelledby="ac-presets-label">
+                        <button class="preset-btn" onclick="setPower(2.3)" aria-label="2.3 kW - Enchufe doméstico">2.3</button>
+                        <button class="preset-btn active" onclick="setPower(3.7)" aria-label="3.7 kW - Wallbox monofásico">3.7</button>
+                        <button class="preset-btn" onclick="setPower(7.4)" aria-label="7.4 kW - Wallbox monofásico">7.4</button>
+                        <button class="preset-btn" onclick="setPower(11)" aria-label="11 kW - Wallbox trifásico">11</button>
+                        <button class="preset-btn" onclick="setPower(22)" aria-label="22 kW - Wallbox trifásico">22</button>
                     </div>
                 </div>
-                <div class="presets-group">
-                    <div class="presets-label">DC</div>
-                    <div class="presets">
-                        <button class="preset-btn" onclick="setPower(50)">50</button>
-                        <button class="preset-btn" onclick="setPower(100)">100</button>
-                        <button class="preset-btn" onclick="setPower(150)">150</button>
-                        <button class="preset-btn" onclick="setPower(250)">250</button>
-                        <button class="preset-btn" onclick="setPower(350)">350</button>
+                <div class="presets-group" role="group" aria-label="Presets de carga DC">
+                    <div class="presets-label" id="dc-presets-label">DC</div>
+                    <div class="presets" role="radiogroup" aria-labelledby="dc-presets-label">
+                        <button class="preset-btn" onclick="setPower(50)" aria-label="50 kW - CCS/CHAdeMO básico">50</button>
+                        <button class="preset-btn" onclick="setPower(100)" aria-label="100 kW - CCS estándar">100</button>
+                        <button class="preset-btn" onclick="setPower(150)" aria-label="150 kW - CCS alta potencia">150</button>
+                        <button class="preset-btn" onclick="setPower(250)" aria-label="250 kW - Tesla Supercharger V3">250</button>
+                        <button class="preset-btn" onclick="setPower(350)" aria-label="350 kW - Ionity ultrarrápido">350</button>
                     </div>
                 </div>
             </div>
 
             <div class="efficiency-row">
-                <span class="efficiency-label" data-i18n="efficiency">Eficiencia de carga</span>
+                <label class="efficiency-label" for="efficiency" data-i18n="efficiency">Eficiencia de carga</label>
                 <div class="efficiency-value">
-                    <input type="number" id="efficiency" value="90" min="50" max="100" step="1">
-                    <span>%</span>
+                    <input type="number" id="efficiency" value="90" min="50" max="100" step="1" aria-label="Eficiencia de carga en porcentaje">
+                    <span aria-hidden="true">%</span>
                 </div>
             </div>
 
             <div class="schedule-section">
                 <div class="schedule-header">
-                    <label class="toggle">
-                        <input type="checkbox" id="scheduleEnabled">
-                        <span class="toggle-slider"></span>
+                    <label class="toggle" for="scheduleEnabled">
+                        <input type="checkbox" id="scheduleEnabled" role="switch" aria-label="Activar programación de carga">
+                        <span class="toggle-slider" aria-hidden="true"></span>
                     </label>
-                    <span class="schedule-title" data-i18n="scheduleCharging">Programar carga</span>
+                    <span class="schedule-title" id="schedule-title" data-i18n="scheduleCharging">Programar carga</span>
                 </div>
-                <div class="schedule-options" id="scheduleOptions">
-                    <div class="schedule-mode">
-                        <button class="mode-btn active" data-mode="start" data-i18n="startAt">Empezar a las</button>
-                        <button class="mode-btn" data-mode="end" data-i18n="finishAt">Terminar a las</button>
+                <div class="schedule-options" id="scheduleOptions" role="group" aria-labelledby="schedule-title">
+                    <div class="schedule-mode" role="radiogroup" aria-label="Modo de programación">
+                        <button class="mode-btn active" data-mode="start" data-i18n="startAt" role="radio" aria-checked="true">Empezar a las</button>
+                        <button class="mode-btn" data-mode="end" data-i18n="finishAt" role="radio" aria-checked="false">Terminar a las</button>
                     </div>
-                    <input type="time" id="scheduleTime" value="07:00">
+                    <input type="time" id="scheduleTime" value="07:00" aria-label="Hora programada">
                 </div>
             </div>
         </div>
 
-        <div class="card result-card">
-            <div class="result-label" data-i18n="estimatedTime">Tiempo estimado de carga</div>
-            <div class="result-time" id="resultTime">4<span>h</span> 30<span>min</span></div>
+        <div class="card result-card" role="region" aria-label="Resultados del cálculo" aria-live="polite">
+            <div class="result-label" id="result-time-label" data-i18n="estimatedTime">Tiempo estimado de carga</div>
+            <div class="result-time" id="resultTime" aria-labelledby="result-time-label">4<span aria-hidden="true">h</span> 30<span aria-hidden="true">min</span></div>
 
             <div class="result-eta">
                 <div class="result-eta-label" id="resultEtaLabel" data-i18n="readyAt">Carga completa a las</div>
-                <div class="result-eta-time" id="resultEta">14:30</div>
+                <div class="result-eta-time" id="resultEta" aria-labelledby="resultEtaLabel">14:30</div>
             </div>
 
             <div class="result-eta result-start" id="resultStartRow" style="display: none;">
-                <div class="result-eta-label" data-i18n="startChargingAt">Empezar a cargar a las</div>
-                <div class="result-eta-time" id="resultStart">--:--</div>
+                <div class="result-eta-label" id="resultStartLabel" data-i18n="startChargingAt">Empezar a cargar a las</div>
+                <div class="result-eta-time" id="resultStart" aria-labelledby="resultStartLabel">--:--</div>
             </div>
 
             <div class="result-details">
                 <div class="detail-item">
-                    <div class="detail-value" id="energyNeeded">30.0 kWh</div>
-                    <div class="detail-label" data-i18n="energyNeeded">Energía necesaria</div>
+                    <div class="detail-value" id="energyNeeded" aria-describedby="energy-needed-label">30.0 kWh</div>
+                    <div class="detail-label" id="energy-needed-label" data-i18n="energyNeeded">Energía necesaria</div>
                 </div>
                 <div class="detail-item">
-                    <div class="detail-value" id="energyFromGrid">33.3 kWh</div>
-                    <div class="detail-label" data-i18n="gridConsumption">Consumo de red</div>
+                    <div class="detail-value" id="energyFromGrid" aria-describedby="grid-consumption-label">33.3 kWh</div>
+                    <div class="detail-label" id="grid-consumption-label" data-i18n="gridConsumption">Consumo de red</div>
                 </div>
             </div>
 
-            <div class="warning-message" id="warningMessage">
-                <span>⚠️</span>
+            <div class="warning-message" id="warningMessage" role="alert">
+                <span aria-hidden="true">⚠️</span>
                 <span id="warningText"></span>
             </div>
+
+            <button class="share-btn" id="shareBtn" style="display: none;" aria-label="Compartir resultado">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span data-i18n="share">Compartir</span>
+            </button>
         </div>
 
         <footer data-i18n="footer">
@@ -927,9 +972,30 @@
                 footer: 'Hecho con ⚡ para conductores de EV',
                 warningAlreadyCharged: 'La carga actual ya es igual o superior a la deseada',
                 warningLongCharge: 'La carga tardará más de 12 horas. Considera un cargador más potente.',
+                warningDcCurve: 'Con carga DC, la velocidad baja significativamente por encima del 80%.',
                 nextDay: '+1 día',
                 hours: 'h',
-                minutes: 'min'
+                minutes: 'min',
+                share: 'Compartir',
+                shareTitle: 'WattWait - Tiempo de carga',
+                shareText: 'Mi coche eléctrico necesita {time} para cargar del {from}% al {to}% con un cargador de {power} kW.',
+                // ARIA labels
+                ariaSelectLang: 'Seleccionar idioma',
+                ariaAvailableLangs: 'Idiomas disponibles',
+                ariaBatteryVisual: 'Visualización del nivel de batería',
+                ariaCapacityControl: 'Control de capacidad de batería',
+                ariaPowerControl: 'Control de potencia del cargador',
+                ariaReduceCapacity: 'Reducir 5 kWh',
+                ariaIncreaseCapacity: 'Aumentar 5 kWh',
+                ariaReducePower: 'Reducir 0.5 kW',
+                ariaIncreasePower: 'Aumentar 0.5 kW',
+                ariaAcPresets: 'Presets de carga AC',
+                ariaDcPresets: 'Presets de carga DC',
+                ariaScheduleToggle: 'Activar programación de carga',
+                ariaScheduleMode: 'Modo de programación',
+                ariaScheduleTime: 'Hora programada',
+                ariaResults: 'Resultados del cálculo',
+                ariaShare: 'Compartir resultado'
             },
             en: {
                 tagline: 'Charging calculator for your EV',
@@ -951,9 +1017,30 @@
                 footer: 'Made with ⚡ for EV drivers',
                 warningAlreadyCharged: 'Current charge is already equal or higher than target',
                 warningLongCharge: 'Charging will take more than 12 hours. Consider a more powerful charger.',
+                warningDcCurve: 'With DC charging, speed drops significantly above 80%.',
                 nextDay: '+1 day',
                 hours: 'h',
-                minutes: 'min'
+                minutes: 'min',
+                share: 'Share',
+                shareTitle: 'WattWait - Charging time',
+                shareText: 'My EV needs {time} to charge from {from}% to {to}% with a {power} kW charger.',
+                // ARIA labels
+                ariaSelectLang: 'Select language',
+                ariaAvailableLangs: 'Available languages',
+                ariaBatteryVisual: 'Battery level visualization',
+                ariaCapacityControl: 'Battery capacity control',
+                ariaPowerControl: 'Charger power control',
+                ariaReduceCapacity: 'Decrease 5 kWh',
+                ariaIncreaseCapacity: 'Increase 5 kWh',
+                ariaReducePower: 'Decrease 0.5 kW',
+                ariaIncreasePower: 'Increase 0.5 kW',
+                ariaAcPresets: 'AC charging presets',
+                ariaDcPresets: 'DC charging presets',
+                ariaScheduleToggle: 'Enable charging schedule',
+                ariaScheduleMode: 'Scheduling mode',
+                ariaScheduleTime: 'Scheduled time',
+                ariaResults: 'Calculation results',
+                ariaShare: 'Share result'
             },
             fr: {
                 tagline: 'Calculateur de charge pour votre VE',
@@ -975,9 +1062,30 @@
                 footer: 'Fait avec ⚡ pour les conducteurs de VE',
                 warningAlreadyCharged: 'La charge actuelle est déjà égale ou supérieure à la cible',
                 warningLongCharge: 'La charge prendra plus de 12 heures. Envisagez un chargeur plus puissant.',
+                warningDcCurve: 'Avec la charge DC, la vitesse diminue significativement au-dessus de 80%.',
                 nextDay: '+1 jour',
                 hours: 'h',
-                minutes: 'min'
+                minutes: 'min',
+                share: 'Partager',
+                shareTitle: 'WattWait - Temps de charge',
+                shareText: 'Mon VE a besoin de {time} pour charger de {from}% à {to}% avec un chargeur de {power} kW.',
+                // ARIA labels
+                ariaSelectLang: 'Sélectionner la langue',
+                ariaAvailableLangs: 'Langues disponibles',
+                ariaBatteryVisual: 'Visualisation du niveau de batterie',
+                ariaCapacityControl: 'Contrôle de capacité de batterie',
+                ariaPowerControl: 'Contrôle de puissance du chargeur',
+                ariaReduceCapacity: 'Réduire 5 kWh',
+                ariaIncreaseCapacity: 'Augmenter 5 kWh',
+                ariaReducePower: 'Réduire 0.5 kW',
+                ariaIncreasePower: 'Augmenter 0.5 kW',
+                ariaAcPresets: 'Préréglages de charge AC',
+                ariaDcPresets: 'Préréglages de charge DC',
+                ariaScheduleToggle: 'Activer la programmation de charge',
+                ariaScheduleMode: 'Mode de programmation',
+                ariaScheduleTime: 'Heure programmée',
+                ariaResults: 'Résultats du calcul',
+                ariaShare: 'Partager le résultat'
             },
             it: {
                 tagline: 'Calcolatore di ricarica per il tuo EV',
@@ -999,9 +1107,30 @@
                 footer: 'Fatto con ⚡ per i conducenti di EV',
                 warningAlreadyCharged: 'La carica attuale è già uguale o superiore a quella desiderata',
                 warningLongCharge: 'La ricarica richiederà più di 12 ore. Considera un caricatore più potente.',
+                warningDcCurve: 'Con la ricarica DC, la velocità diminuisce significativamente sopra l\'80%.',
                 nextDay: '+1 giorno',
                 hours: 'h',
-                minutes: 'min'
+                minutes: 'min',
+                share: 'Condividi',
+                shareTitle: 'WattWait - Tempo di ricarica',
+                shareText: 'Il mio EV ha bisogno di {time} per caricare dal {from}% al {to}% con un caricatore da {power} kW.',
+                // ARIA labels
+                ariaSelectLang: 'Seleziona lingua',
+                ariaAvailableLangs: 'Lingue disponibili',
+                ariaBatteryVisual: 'Visualizzazione livello batteria',
+                ariaCapacityControl: 'Controllo capacità batteria',
+                ariaPowerControl: 'Controllo potenza caricatore',
+                ariaReduceCapacity: 'Riduci 5 kWh',
+                ariaIncreaseCapacity: 'Aumenta 5 kWh',
+                ariaReducePower: 'Riduci 0.5 kW',
+                ariaIncreasePower: 'Aumenta 0.5 kW',
+                ariaAcPresets: 'Preset di ricarica AC',
+                ariaDcPresets: 'Preset di ricarica DC',
+                ariaScheduleToggle: 'Attiva programmazione ricarica',
+                ariaScheduleMode: 'Modalità di programmazione',
+                ariaScheduleTime: 'Orario programmato',
+                ariaResults: 'Risultati del calcolo',
+                ariaShare: 'Condividi risultato'
             },
             pt: {
                 tagline: 'Calculadora de carregamento para seu VE',
@@ -1023,9 +1152,30 @@
                 footer: 'Feito com ⚡ para motoristas de VE',
                 warningAlreadyCharged: 'A carga atual já é igual ou superior à desejada',
                 warningLongCharge: 'O carregamento levará mais de 12 horas. Considere um carregador mais potente.',
+                warningDcCurve: 'Com carregamento DC, a velocidade diminui significativamente acima de 80%.',
                 nextDay: '+1 dia',
                 hours: 'h',
-                minutes: 'min'
+                minutes: 'min',
+                share: 'Compartilhar',
+                shareTitle: 'WattWait - Tempo de carregamento',
+                shareText: 'Meu VE precisa de {time} para carregar de {from}% a {to}% com um carregador de {power} kW.',
+                // ARIA labels
+                ariaSelectLang: 'Selecionar idioma',
+                ariaAvailableLangs: 'Idiomas disponíveis',
+                ariaBatteryVisual: 'Visualização do nível da bateria',
+                ariaCapacityControl: 'Controle de capacidade da bateria',
+                ariaPowerControl: 'Controle de potência do carregador',
+                ariaReduceCapacity: 'Reduzir 5 kWh',
+                ariaIncreaseCapacity: 'Aumentar 5 kWh',
+                ariaReducePower: 'Reduzir 0.5 kW',
+                ariaIncreasePower: 'Aumentar 0.5 kW',
+                ariaAcPresets: 'Presets de carregamento AC',
+                ariaDcPresets: 'Presets de carregamento DC',
+                ariaScheduleToggle: 'Ativar programação de carregamento',
+                ariaScheduleMode: 'Modo de programação',
+                ariaScheduleTime: 'Horário programado',
+                ariaResults: 'Resultados do cálculo',
+                ariaShare: 'Compartilhar resultado'
             }
         };
 
@@ -1094,13 +1244,14 @@
 
         function setLanguage(lang) {
             currentLang = lang;
+            const t = translations[lang];
             document.getElementById('html-root').setAttribute('lang', lang);
 
             // Update all translatable elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    el.textContent = translations[lang][key];
+                if (t[key]) {
+                    el.textContent = t[key];
                 }
             });
 
@@ -1112,6 +1263,34 @@
             document.querySelectorAll('.lang-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.lang === lang);
             });
+
+            // Update ARIA labels
+            document.getElementById('langBtn').setAttribute('aria-label', t.ariaSelectLang);
+            document.getElementById('langDropdown').setAttribute('aria-label', t.ariaAvailableLangs);
+            document.querySelector('.battery-visual').setAttribute('aria-label', t.ariaBatteryVisual);
+            document.querySelector('[aria-label*="capacidad"], [aria-label*="capacity"], [aria-label*="capacité"], [aria-label*="capacità"], [aria-label*="capacidade"]')?.closest('.stepper')?.setAttribute('aria-label', t.ariaCapacityControl);
+            document.querySelector('[aria-label*="potencia"], [aria-label*="power"], [aria-label*="puissance"], [aria-label*="potenza"], [aria-label*="potência"]')?.closest('.stepper')?.setAttribute('aria-label', t.ariaPowerControl);
+            document.getElementById('scheduleEnabled').setAttribute('aria-label', t.ariaScheduleToggle);
+            document.querySelector('.schedule-mode').setAttribute('aria-label', t.ariaScheduleMode);
+            document.getElementById('scheduleTime').setAttribute('aria-label', t.ariaScheduleTime);
+            document.querySelector('.result-card').setAttribute('aria-label', t.ariaResults);
+            document.getElementById('shareBtn').setAttribute('aria-label', t.ariaShare);
+
+            // Update stepper button ARIA labels
+            const steppers = document.querySelectorAll('.stepper');
+            if (steppers[0]) {
+                steppers[0].querySelector('.stepper-btn:first-child').setAttribute('aria-label', t.ariaReduceCapacity);
+                steppers[0].querySelector('.stepper-btn:last-child').setAttribute('aria-label', t.ariaIncreaseCapacity);
+            }
+            if (steppers[1]) {
+                steppers[1].querySelector('.stepper-btn:first-child').setAttribute('aria-label', t.ariaReducePower);
+                steppers[1].querySelector('.stepper-btn:last-child').setAttribute('aria-label', t.ariaIncreasePower);
+            }
+
+            // Update preset groups ARIA labels
+            const presetGroups = document.querySelectorAll('.presets-group');
+            if (presetGroups[0]) presetGroups[0].setAttribute('aria-label', t.ariaAcPresets);
+            if (presetGroups[1]) presetGroups[1].setAttribute('aria-label', t.ariaDcPresets);
 
             // Recalculate to update dynamic texts
             calculate();
@@ -1277,10 +1456,22 @@
             } else if (timeHours > 12) {
                 warningText.textContent = t.warningLongCharge;
                 warningMessage.classList.add('show');
+            } else if (power >= 50 && targetCharge > 80) {
+                // DC fast charging warning: speed drops above 80%
+                warningText.textContent = t.warningDcCurve;
+                warningMessage.classList.add('show');
             }
 
             // Update active preset button
             updatePresetButtons();
+
+            // Store current calculation for sharing
+            window.lastCalculation = {
+                time: hours > 0 ? `${hours}${t.hours} ${minutes}${t.minutes}` : `${minutes}${t.minutes}`,
+                from: currentCharge,
+                to: targetCharge,
+                power: power
+            };
 
             // Save to localStorage
             saveSettings();
@@ -1340,8 +1531,12 @@
         // Schedule mode buttons
         modeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                modeBtns.forEach(b => b.classList.remove('active'));
+                modeBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-checked', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-checked', 'true');
                 currentScheduleMode = btn.dataset.mode;
                 calculate();
             });
@@ -1362,24 +1557,59 @@
 
         // ==================== Language Selector ====================
         const langSelector = document.getElementById('langSelector');
-        const langBtn = document.getElementById('langBtn');
+        const langBtnEl = document.getElementById('langBtn');
 
-        langBtn.addEventListener('click', (e) => {
+        langBtnEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            langSelector.classList.toggle('open');
+            const isOpen = langSelector.classList.toggle('open');
+            langBtnEl.setAttribute('aria-expanded', isOpen.toString());
         });
 
         document.querySelectorAll('.lang-option').forEach(option => {
             option.addEventListener('click', () => {
                 setLanguage(option.dataset.lang);
                 langSelector.classList.remove('open');
+                langBtnEl.setAttribute('aria-expanded', 'false');
             });
         });
 
         // Close dropdown when clicking outside
         document.addEventListener('click', () => {
             langSelector.classList.remove('open');
+            langBtnEl.setAttribute('aria-expanded', 'false');
         });
+
+        // ==================== Web Share API ====================
+        const shareBtn = document.getElementById('shareBtn');
+
+        // Show share button only if Web Share API is supported
+        if (navigator.share) {
+            shareBtn.style.display = 'flex';
+
+            shareBtn.addEventListener('click', async () => {
+                const t = translations[currentLang];
+                const calc = window.lastCalculation;
+
+                if (!calc) return;
+
+                const text = t.shareText
+                    .replace('{time}', calc.time)
+                    .replace('{from}', calc.from)
+                    .replace('{to}', calc.to)
+                    .replace('{power}', calc.power);
+
+                try {
+                    await navigator.share({
+                        title: t.shareTitle,
+                        text: text,
+                        url: 'https://alejandrosuch.github.io/watt-wait/'
+                    });
+                } catch (err) {
+                    // User cancelled or share failed - ignore
+                    console.log('Share cancelled or failed:', err);
+                }
+            });
+        }
 
         // ==================== Initialization ====================
         // Apply saved settings first (before language init)
