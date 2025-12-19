@@ -4,7 +4,7 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
-## [Unreleased]
+## [1.3.0] - 2025-12-19
 
 ### Added
 - Warning cuando el tiempo de inicio programado está en el pasado (modo "Terminar a las X")
