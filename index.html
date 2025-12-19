@@ -1432,13 +1432,11 @@
                     startTime = new Date(endTime.getTime() - timeHours * 60 * 60 * 1000);
 
                     // Check if start time is in the past (impossible to achieve)
-                    console.log('DEBUG - startTime:', startTime.toISOString(), 'now:', now.toISOString(), 'startTime < now:', startTime < now);
                     if (startTime < now) {
                         // Calculate achievable percentage if starting now
                         const availableTimeHours = (endTime.getTime() - now.getTime()) / (60 * 60 * 1000);
                         const achievableEnergy = availableTimeHours * power * efficiency;
-                        const achievablePercent = Math.min(100, Math.round(currentCharge + (achievableEnergy / batteryCapacity * 100)));
-                        console.log('DEBUG - availableTimeHours:', availableTimeHours, 'power:', power, 'efficiency:', efficiency, 'achievablePercent:', achievablePercent, 'target:', targetCharge);
+                        const achievablePercent = Math.min(100, Math.round(currentCharge + (achievableEnergy / capacity * 100)));
 
                         // Store for warning display
                         window.startInPastWarning = {
@@ -1479,7 +1477,6 @@
 
             // Warnings
             warningMessage.classList.remove('show');
-            console.log('DEBUG - warnings check: startInPastWarning=', window.startInPastWarning);
 
             if (currentCharge >= targetCharge) {
                 warningText.textContent = t.warningAlreadyCharged;
