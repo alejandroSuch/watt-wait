@@ -1432,6 +1432,7 @@
                     startTime = new Date(endTime.getTime() - timeHours * 60 * 60 * 1000);
 
                     // Check if start time is in the past (impossible to achieve)
+                    console.log('DEBUG - startTime:', startTime.toISOString(), 'now:', now.toISOString(), 'startTime < now:', startTime < now);
                     if (startTime < now) {
                         // Calculate achievable percentage if starting now
                         const availableTimeHours = (endTime.getTime() - now.getTime()) / (60 * 60 * 1000);
