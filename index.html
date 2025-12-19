@@ -975,6 +975,7 @@
                 warningAlreadyCharged: 'La carga actual ya es igual o superior a la deseada',
                 warningLongCharge: 'La carga tardará más de 12 horas. Considera un cargador más potente.',
                 warningDcCurve: 'Con carga DC, la velocidad baja significativamente por encima del 80%.',
+                warningStartInPast: 'No es posible alcanzar el {target}% a esa hora. Si empiezas ahora, llegarás al {achievable}%.',
                 nextDay: '+1 día',
                 hours: 'h',
                 minutes: 'min',
@@ -1020,6 +1021,7 @@
                 warningAlreadyCharged: 'Current charge is already equal or higher than target',
                 warningLongCharge: 'Charging will take more than 12 hours. Consider a more powerful charger.',
                 warningDcCurve: 'With DC charging, speed drops significantly above 80%.',
+                warningStartInPast: 'Cannot reach {target}% by that time. Starting now, you\'ll reach {achievable}%.',
                 nextDay: '+1 day',
                 hours: 'h',
                 minutes: 'min',
@@ -1065,6 +1067,7 @@
                 warningAlreadyCharged: 'La charge actuelle est déjà égale ou supérieure à la cible',
                 warningLongCharge: 'La charge prendra plus de 12 heures. Envisagez un chargeur plus puissant.',
                 warningDcCurve: 'Avec la charge DC, la vitesse diminue significativement au-dessus de 80%.',
+                warningStartInPast: 'Impossible d\'atteindre {target}% à cette heure. En commençant maintenant, vous atteindrez {achievable}%.',
                 nextDay: '+1 jour',
                 hours: 'h',
                 minutes: 'min',
@@ -1110,6 +1113,7 @@
                 warningAlreadyCharged: 'La carica attuale è già uguale o superiore a quella desiderata',
                 warningLongCharge: 'La ricarica richiederà più di 12 ore. Considera un caricatore più potente.',
                 warningDcCurve: 'Con la ricarica DC, la velocità diminuisce significativamente sopra l\'80%.',
+                warningStartInPast: 'Impossibile raggiungere il {target}% a quell\'ora. Iniziando ora, raggiungerai il {achievable}%.',
                 nextDay: '+1 giorno',
                 hours: 'h',
                 minutes: 'min',
@@ -1155,6 +1159,7 @@
                 warningAlreadyCharged: 'A carga atual já é igual ou superior à desejada',
                 warningLongCharge: 'O carregamento levará mais de 12 horas. Considere um carregador mais potente.',
                 warningDcCurve: 'Com carregamento DC, a velocidade diminui significativamente acima de 80%.',
+                warningStartInPast: 'Não é possível alcançar {target}% nesse horário. Começando agora, você chegará a {achievable}%.',
                 nextDay: '+1 dia',
                 hours: 'h',
                 minutes: 'min',
@@ -1420,10 +1425,30 @@
                     startTime = scheduledTime;
                     endTime = new Date(startTime.getTime() + timeHours * 60 * 60 * 1000);
                     resultStartRow.style.display = 'none';
+                    window.startInPastWarning = null;
                 } else {
                     // Mode: Finish at X → calculate start time
                     endTime = scheduledTime;
                     startTime = new Date(endTime.getTime() - timeHours * 60 * 60 * 1000);
+
+                    // Check if start time is in the past (impossible to achieve)
+                    if (startTime < now) {
+                        // Calculate achievable percentage if starting now
+                        const availableTimeHours = (endTime.getTime() - now.getTime()) / (60 * 60 * 1000);
+                        const achievableEnergy = availableTimeHours * power * efficiency;
+                        const achievablePercent = Math.min(100, Math.round(currentCharge + (achievableEnergy / batteryCapacity * 100)));
+
+                        // Store for warning display
+                        window.startInPastWarning = {
+                            target: targetCharge,
+                            achievable: achievablePercent
+                        };
+
+                        // Adjust startTime to now for display purposes
+                        startTime = now;
+                    } else {
+                        window.startInPastWarning = null;
+                    }
 
                     // Show start time in results
                     const startHours = startTime.getHours().toString().padStart(2, '0');
@@ -1436,6 +1461,7 @@
                 startTime = now;
                 endTime = new Date(startTime.getTime() + timeHours * 60 * 60 * 1000);
                 resultStartRow.style.display = 'none';
+                window.startInPastWarning = null;
             }
 
             const etaHours = endTime.getHours().toString().padStart(2, '0');
@@ -1454,6 +1480,12 @@
 
             if (currentCharge >= targetCharge) {
                 warningText.textContent = t.warningAlreadyCharged;
+                warningMessage.classList.add('show');
+            } else if (window.startInPastWarning && window.startInPastWarning.achievable < window.startInPastWarning.target) {
+                // Start time is in the past - show achievable percentage
+                warningText.textContent = t.warningStartInPast
+                    .replace('{target}', window.startInPastWarning.target)
+                    .replace('{achievable}', window.startInPastWarning.achievable);
                 warningMessage.classList.add('show');
             } else if (timeHours > 12) {
                 warningText.textContent = t.warningLongCharge;

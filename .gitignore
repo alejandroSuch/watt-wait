@@ -6,3 +6,6 @@ SEO_GUIDE.md
 OPTIMIZATIONS.md
 lighthouse-analysis.md
 lighthouse-report.html
+CLOUDFLARE_ANALYTICS.md
+lighthouse-report.json
+.idea/
