@@ -1,4 +1,4 @@
-const CACHE_NAME = 'wattwait-v8';
+const CACHE_NAME = 'wattwait-v9';
 const ASSETS = [
     '/watt-wait/',
     '/watt-wait/index.html',

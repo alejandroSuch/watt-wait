@@ -1374,9 +1374,9 @@
         function calculate() {
             const currentCharge = parseInt(currentChargeSlider.value);
             const targetCharge = parseInt(targetChargeSlider.value);
-            const capacity = parseFloat(batteryCapacityInput.value) || 50;
-            const power = parseFloat(chargerPowerInput.value) || 3.7;
-            const efficiency = (parseFloat(efficiencyInput.value) || 90) / 100;
+            const capacity = Math.max(1, parseFloat(batteryCapacityInput.value) || 50);
+            const power = Math.max(0.1, parseFloat(chargerPowerInput.value) || 3.7);
+            const efficiency = Math.max(10, Math.min(100, parseFloat(efficiencyInput.value) || 90)) / 100;
 
             // Update displays
             currentValueDisplay.innerHTML = currentCharge + '<span>%</span>';
@@ -1552,9 +1552,22 @@
         // Event listeners
         currentChargeSlider.addEventListener('input', calculate);
         targetChargeSlider.addEventListener('input', calculate);
-        batteryCapacityInput.addEventListener('input', calculate);
-        chargerPowerInput.addEventListener('input', calculate);
-        efficiencyInput.addEventListener('input', calculate);
+        // Sanitize number inputs to prevent negative values
+        function sanitizeInput(input, min, max, defaultVal) {
+            return function() {
+                let val = parseFloat(input.value);
+                if (isNaN(val) || val < min) {
+                    input.value = min;
+                } else if (val > max) {
+                    input.value = max;
+                }
+                calculate();
+            };
+        }
+
+        batteryCapacityInput.addEventListener('input', sanitizeInput(batteryCapacityInput, 1, 500, 50));
+        chargerPowerInput.addEventListener('input', sanitizeInput(chargerPowerInput, 0.1, 500, 3.7));
+        efficiencyInput.addEventListener('input', sanitizeInput(efficiencyInput, 10, 100, 90));
         scheduleTimeInput.addEventListener('input', calculate);
 
         // Schedule toggle
