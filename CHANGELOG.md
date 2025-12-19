@@ -4,6 +4,15 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.4.0] - 2025-12-19
+
+### Added
+- Cloudflare Web Analytics
+- Verificación de Google Search Console
+
+### Fixed
+- Validación de inputs numéricos para prevenir valores negativos
+
 ## [1.3.0] - 2025-12-19
 
 ### Added
