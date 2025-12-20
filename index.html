@@ -374,6 +374,60 @@
             border-color: var(--accent);
         }
 
+        .efficiency-slider-row {
+            background: var(--bg-input);
+            border-radius: 12px;
+            margin-top: 16px;
+            padding: 12px 16px;
+        }
+
+        .efficiency-slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .efficiency-slider-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .efficiency-slider-value span {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .efficiency-slider-row input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-card);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .efficiency-slider-row input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .efficiency-slider-row input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
         .efficiency-row {
             display: flex;
             align-items: center;
@@ -883,12 +937,12 @@
                 </div>
             </div>
 
-            <div class="efficiency-row">
-                <label class="efficiency-label" for="efficiency" data-i18n="efficiency">Eficiencia de carga</label>
-                <div class="efficiency-value">
-                    <input type="number" id="efficiency" value="90" min="50" max="100" step="1" aria-label="Eficiencia de carga en porcentaje">
-                    <span aria-hidden="true">%</span>
+            <div class="efficiency-slider-row">
+                <div class="efficiency-slider-header">
+                    <label class="efficiency-label" for="efficiency" data-i18n="efficiency">Eficiencia de carga</label>
+                    <span class="efficiency-slider-value" id="efficiencyValue">90<span>%</span></span>
                 </div>
+                <input type="range" id="efficiency" min="50" max="100" value="90" aria-label="Eficiencia de carga en porcentaje">
             </div>
 
             <div class="efficiency-row">
@@ -1348,6 +1402,7 @@
         const batteryCapacityInput = document.getElementById('batteryCapacity');
         const chargerPowerInput = document.getElementById('chargerPower');
         const efficiencyInput = document.getElementById('efficiency');
+        const efficiencyValue = document.getElementById('efficiencyValue');
         const electricityPriceInput = document.getElementById('electricityPrice');
         const scheduleEnabledInput = document.getElementById('scheduleEnabled');
         const scheduleOptionsEl = document.getElementById('scheduleOptions');
@@ -1414,6 +1469,7 @@
             // Update displays
             currentValueDisplay.innerHTML = currentCharge + '<span>%</span>';
             targetValueDisplay.innerHTML = targetCharge + '<span>%</span>';
+            efficiencyValue.innerHTML = Math.round(efficiency * 100) + '<span>%</span>';
 
             // Update battery visual
             updateBatteryVisual();
@@ -1607,7 +1663,6 @@
 
         batteryCapacityInput.addEventListener('blur', sanitizeOnBlur(batteryCapacityInput, 1, 500, 50));
         chargerPowerInput.addEventListener('blur', sanitizeOnBlur(chargerPowerInput, 0.1, 500, 3.7));
-        efficiencyInput.addEventListener('blur', sanitizeOnBlur(efficiencyInput, 10, 100, 90));
         electricityPriceInput.addEventListener('blur', sanitizeOnBlur(electricityPriceInput, 0, 2, 0.15));
         scheduleTimeInput.addEventListener('input', calculate);
 
