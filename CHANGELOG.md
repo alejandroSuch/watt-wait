@@ -11,6 +11,9 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 - Input para precio de electricidad (€/kWh)
 - Traducciones del coste en 5 idiomas
 
+### Fixed
+- Input de precio más ancho para permitir hasta 5 decimales
+
 ## [1.4.0] - 2025-12-19
 
 ### Added
