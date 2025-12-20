@@ -1587,12 +1587,12 @@
         // Event listeners
         currentChargeSlider.addEventListener('input', calculate);
         targetChargeSlider.addEventListener('input', calculate);
-        // Sanitize number inputs to prevent negative values
-        function sanitizeInput(input, min, max, defaultVal) {
+        // Sanitize on blur (allows user to clear and type new value)
+        function sanitizeOnBlur(input, min, max, defaultVal) {
             return function() {
                 let val = parseFloat(input.value);
                 if (isNaN(val) || val < min) {
-                    input.value = min;
+                    input.value = defaultVal;
                 } else if (val > max) {
                     input.value = max;
                 }
@@ -1600,10 +1600,15 @@
             };
         }
 
-        batteryCapacityInput.addEventListener('input', sanitizeInput(batteryCapacityInput, 1, 500, 50));
-        chargerPowerInput.addEventListener('input', sanitizeInput(chargerPowerInput, 0.1, 500, 3.7));
-        efficiencyInput.addEventListener('input', sanitizeInput(efficiencyInput, 10, 100, 90));
-        electricityPriceInput.addEventListener('input', sanitizeInput(electricityPriceInput, 0, 2, 0.15));
+        batteryCapacityInput.addEventListener('input', calculate);
+        chargerPowerInput.addEventListener('input', calculate);
+        efficiencyInput.addEventListener('input', calculate);
+        electricityPriceInput.addEventListener('input', calculate);
+
+        batteryCapacityInput.addEventListener('blur', sanitizeOnBlur(batteryCapacityInput, 1, 500, 50));
+        chargerPowerInput.addEventListener('blur', sanitizeOnBlur(chargerPowerInput, 0.1, 500, 3.7));
+        efficiencyInput.addEventListener('blur', sanitizeOnBlur(efficiencyInput, 10, 100, 90));
+        electricityPriceInput.addEventListener('blur', sanitizeOnBlur(electricityPriceInput, 0, 2, 0.15));
         scheduleTimeInput.addEventListener('input', calculate);
 
         // Schedule toggle
