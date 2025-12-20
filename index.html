@@ -401,11 +401,10 @@
             border: none;
             border-radius: 8px;
             padding: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--accent);
-            text-align: center;
-            outline: none;
+        }
+
+        .efficiency-value input#electricityPrice {
+            width: 85px;
         }
 
         .efficiency-value span {
@@ -890,7 +889,7 @@
             <div class="efficiency-row">
                 <label class="efficiency-label" for="electricityPrice" data-i18n="electricityPrice">Precio electricidad</label>
                 <div class="efficiency-value">
-                    <input type="number" id="electricityPrice" value="0.15" min="0" max="2" step="0.01" aria-label="Precio de electricidad por kWh">
+                    <input type="number" id="electricityPrice" value="0.15" min="0" max="2" step="0.00001" aria-label="Precio de electricidad por kWh">
                     <span aria-hidden="true">€/kWh</span>
                 </div>
             </div>
