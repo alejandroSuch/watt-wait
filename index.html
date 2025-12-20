@@ -899,41 +899,41 @@
             <div class="input-group">
                 <label class="input-label" for="batteryCapacity" data-i18n="batteryCapacity">Capacidad de batería (kWh)</label>
                 <div class="stepper" role="group" aria-label="Control de capacidad de batería">
-                    <button class="stepper-btn" onclick="adjustCapacity(-5)" aria-label="Reducir 5 kWh">−</button>
+                    <button class="stepper-btn" data-adjust="capacity" data-delta="-5" aria-label="Reducir 5 kWh">−</button>
                     <div class="stepper-input">
                         <input type="number" id="batteryCapacity" value="50" min="10" max="200" step="1" aria-label="Capacidad de batería en kWh">
                     </div>
-                    <button class="stepper-btn" onclick="adjustCapacity(5)" aria-label="Aumentar 5 kWh">+</button>
+                    <button class="stepper-btn" data-adjust="capacity" data-delta="5" aria-label="Aumentar 5 kWh">+</button>
                 </div>
             </div>
 
             <div class="input-group">
                 <label class="input-label" for="chargerPower" data-i18n="chargerPower">Potencia del cargador (kW)</label>
                 <div class="stepper" role="group" aria-label="Control de potencia del cargador">
-                    <button class="stepper-btn" onclick="adjustPower(-0.5)" aria-label="Reducir 0.5 kW">−</button>
+                    <button class="stepper-btn" data-adjust="power" data-delta="-0.5" aria-label="Reducir 0.5 kW">−</button>
                     <div class="stepper-input">
                         <input type="number" id="chargerPower" value="3.7" min="1" max="350" step="0.1" aria-label="Potencia del cargador en kW">
                     </div>
-                    <button class="stepper-btn" onclick="adjustPower(0.5)" aria-label="Aumentar 0.5 kW">+</button>
+                    <button class="stepper-btn" data-adjust="power" data-delta="0.5" aria-label="Aumentar 0.5 kW">+</button>
                 </div>
                 <div class="presets-group" role="group" aria-label="Presets de carga AC">
                     <div class="presets-label" id="ac-presets-label">AC</div>
                     <div class="presets" role="radiogroup" aria-labelledby="ac-presets-label">
-                        <button class="preset-btn" onclick="setPower(2.3)" aria-label="2.3 kW - Enchufe doméstico">2.3</button>
-                        <button class="preset-btn active" onclick="setPower(3.7)" aria-label="3.7 kW - Wallbox monofásico">3.7</button>
-                        <button class="preset-btn" onclick="setPower(7.4)" aria-label="7.4 kW - Wallbox monofásico">7.4</button>
-                        <button class="preset-btn" onclick="setPower(11)" aria-label="11 kW - Wallbox trifásico">11</button>
-                        <button class="preset-btn" onclick="setPower(22)" aria-label="22 kW - Wallbox trifásico">22</button>
+                        <button class="preset-btn" data-power="2.3" aria-label="2.3 kW - Enchufe doméstico">2.3</button>
+                        <button class="preset-btn active" data-power="3.7" aria-label="3.7 kW - Wallbox monofásico">3.7</button>
+                        <button class="preset-btn" data-power="7.4" aria-label="7.4 kW - Wallbox monofásico">7.4</button>
+                        <button class="preset-btn" data-power="11" aria-label="11 kW - Wallbox trifásico">11</button>
+                        <button class="preset-btn" data-power="22" aria-label="22 kW - Wallbox trifásico">22</button>
                     </div>
                 </div>
                 <div class="presets-group" role="group" aria-label="Presets de carga DC">
                     <div class="presets-label" id="dc-presets-label">DC</div>
                     <div class="presets" role="radiogroup" aria-labelledby="dc-presets-label">
-                        <button class="preset-btn" onclick="setPower(50)" aria-label="50 kW - CCS/CHAdeMO básico">50</button>
-                        <button class="preset-btn" onclick="setPower(100)" aria-label="100 kW - CCS estándar">100</button>
-                        <button class="preset-btn" onclick="setPower(150)" aria-label="150 kW - CCS alta potencia">150</button>
-                        <button class="preset-btn" onclick="setPower(250)" aria-label="250 kW - Tesla Supercharger V3">250</button>
-                        <button class="preset-btn" onclick="setPower(350)" aria-label="350 kW - Ionity ultrarrápido">350</button>
+                        <button class="preset-btn" data-power="50" aria-label="50 kW - CCS/CHAdeMO básico">50</button>
+                        <button class="preset-btn" data-power="100" aria-label="100 kW - CCS estándar">100</button>
+                        <button class="preset-btn" data-power="150" aria-label="150 kW - CCS alta potencia">150</button>
+                        <button class="preset-btn" data-power="250" aria-label="250 kW - Tesla Supercharger V3">250</button>
+                        <button class="preset-btn" data-power="350" aria-label="350 kW - Ionity ultrarrápido">350</button>
                     </div>
                 </div>
             </div>
@@ -1278,6 +1278,13 @@
         };
 
         let currentLang = 'es';
+
+        // ==================== CONSTANTS ====================
+        const THRESHOLDS = {
+            LONG_CHARGE_HOURS: 12,      // Warning for very long charge times
+            DC_POWER_MIN: 50,           // Minimum power to be considered DC charging
+            DC_CURVE_TARGET: 80         // Above this %, DC charging slows significantly
+        };
 
         // ==================== UTILITIES ====================
         // Debounce - delays execution until calls stop
@@ -1624,10 +1631,10 @@
                     .replace('{target}', window.startInPastWarning.target)
                     .replace('{achievable}', window.startInPastWarning.achievable);
                 warningMessage.classList.add('show');
-            } else if (timeHours > 12) {
+            } else if (timeHours > THRESHOLDS.LONG_CHARGE_HOURS) {
                 warningText.textContent = t.warningLongCharge;
                 warningMessage.classList.add('show');
-            } else if (power >= 50 && targetCharge > 80) {
+            } else if (power >= THRESHOLDS.DC_POWER_MIN && targetCharge > THRESHOLDS.DC_CURVE_TARGET) {
                 // DC fast charging warning: speed drops above 80%
                 warningText.textContent = t.warningDcCurve;
                 warningMessage.classList.add('show');
@@ -1699,6 +1706,27 @@
         currentChargeSlider.addEventListener('input', () => { haptic(5); updateBatteryVisual(); calculateDebounced(); });
         targetChargeSlider.addEventListener('input', () => { haptic(5); updateBatteryVisual(); calculateDebounced(); });
         efficiencyInput.addEventListener('input', () => { haptic(5); calculateDebounced(); });
+
+        // Event delegation for stepper buttons
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-adjust]');
+            if (btn) {
+                const delta = parseFloat(btn.dataset.delta);
+                if (btn.dataset.adjust === 'capacity') {
+                    adjustCapacity(delta);
+                } else if (btn.dataset.adjust === 'power') {
+                    adjustPower(delta);
+                }
+            }
+        });
+
+        // Event delegation for preset buttons
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-power]');
+            if (btn) {
+                setPower(parseFloat(btn.dataset.power));
+            }
+        });
         // Sanitize on blur (allows user to clear and type new value)
         function sanitizeOnBlur(input, min, max, defaultVal) {
             return function() {

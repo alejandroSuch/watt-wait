@@ -13,6 +13,10 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
   - Referencias DOM cacheadas en setLanguage()
   - requestAnimationFrame para actualizaciones visuales
   - Botones de preset cacheados
+- Mejoras de calidad de código:
+  - Eliminados handlers inline `onclick` (event delegation)
+  - Constantes mágicas extraídas a objeto `THRESHOLDS`
+  - Selectores ARIA simplificados (referencias cacheadas)
 
 ### Fixed
 - Prevenido double-tap zoom en móvil (`touch-action: manipulation`)
