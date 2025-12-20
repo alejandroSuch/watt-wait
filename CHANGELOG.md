@@ -14,6 +14,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ### Changed
 - Eficiencia de carga ahora es un slider (más intuitivo)
 - Validación de inputs en blur en vez de input (permite borrar para escribir nuevo valor)
+- Haptic feedback en sliders, botones y toggles (móvil)
 
 ### Fixed
 - Input de precio más ancho para permitir hasta 5 decimales
