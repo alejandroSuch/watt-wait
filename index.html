@@ -1605,6 +1605,7 @@
 
         // Adjust capacity with stepper buttons
         function adjustCapacity(delta) {
+            haptic(10);
             const current = parseFloat(batteryCapacityInput.value) || 50;
             const newValue = Math.max(10, Math.min(200, current + delta));
             batteryCapacityInput.value = newValue;
@@ -1613,6 +1614,7 @@
 
         // Adjust power with stepper buttons
         function adjustPower(delta) {
+            haptic(10);
             const current = parseFloat(chargerPowerInput.value) || 3.7;
             const newValue = Math.max(1, Math.min(350, Math.round((current + delta) * 10) / 10));
             chargerPowerInput.value = newValue;
@@ -1621,6 +1623,7 @@
 
         // Set power from preset
         function setPower(value) {
+            haptic(15);
             chargerPowerInput.value = value;
             calculate();
         }
@@ -1640,9 +1643,17 @@
             });
         }
 
+        // Haptic feedback utility
+        function haptic(duration = 10) {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(duration);
+            }
+        }
+
         // Event listeners
-        currentChargeSlider.addEventListener('input', calculate);
-        targetChargeSlider.addEventListener('input', calculate);
+        currentChargeSlider.addEventListener('input', () => { haptic(5); calculate(); });
+        targetChargeSlider.addEventListener('input', () => { haptic(5); calculate(); });
+        efficiencyInput.addEventListener('input', () => { haptic(5); calculate(); });
         // Sanitize on blur (allows user to clear and type new value)
         function sanitizeOnBlur(input, min, max, defaultVal) {
             return function() {
@@ -1658,7 +1669,6 @@
 
         batteryCapacityInput.addEventListener('input', calculate);
         chargerPowerInput.addEventListener('input', calculate);
-        efficiencyInput.addEventListener('input', calculate);
         electricityPriceInput.addEventListener('input', calculate);
 
         batteryCapacityInput.addEventListener('blur', sanitizeOnBlur(batteryCapacityInput, 1, 500, 50));
@@ -1668,6 +1678,7 @@
 
         // Schedule toggle
         scheduleEnabledInput.addEventListener('change', () => {
+            haptic(15);
             scheduleOptionsEl.classList.toggle('active', scheduleEnabledInput.checked);
             calculate();
         });
@@ -1675,6 +1686,7 @@
         // Schedule mode buttons
         modeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                haptic(15);
                 modeBtns.forEach(b => {
                     b.classList.remove('active');
                     b.setAttribute('aria-checked', 'false');
