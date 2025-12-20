@@ -887,6 +887,14 @@
                 </div>
             </div>
 
+            <div class="efficiency-row">
+                <label class="efficiency-label" for="electricityPrice" data-i18n="electricityPrice">Precio electricidad</label>
+                <div class="efficiency-value">
+                    <input type="number" id="electricityPrice" value="0.15" min="0" max="2" step="0.01" aria-label="Precio de electricidad por kWh">
+                    <span aria-hidden="true">€/kWh</span>
+                </div>
+            </div>
+
             <div class="schedule-section">
                 <div class="schedule-header">
                     <label class="toggle" for="scheduleEnabled">
@@ -927,6 +935,10 @@
                 <div class="detail-item">
                     <div class="detail-value" id="energyFromGrid" aria-describedby="grid-consumption-label">33.3 kWh</div>
                     <div class="detail-label" id="grid-consumption-label" data-i18n="gridConsumption">Consumo de red</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-value" id="chargeCost" aria-describedby="charge-cost-label">5.00 €</div>
+                    <div class="detail-label" id="charge-cost-label" data-i18n="chargeCost">Coste estimado</div>
                 </div>
             </div>
 
@@ -973,6 +985,8 @@
                 startChargingAt: 'Empezar a cargar a las',
                 energyNeeded: 'Energía necesaria',
                 gridConsumption: 'Consumo de red',
+                electricityPrice: 'Precio electricidad',
+                chargeCost: 'Coste estimado',
                 footer: 'Hecho con ⚡ para conductores de EV',
                 warningAlreadyCharged: 'La carga actual ya es igual o superior a la deseada',
                 warningLongCharge: 'La carga tardará más de 12 horas. Considera un cargador más potente.',
@@ -1019,6 +1033,8 @@
                 startChargingAt: 'Start charging at',
                 energyNeeded: 'Energy needed',
                 gridConsumption: 'Grid consumption',
+                electricityPrice: 'Electricity price',
+                chargeCost: 'Estimated cost',
                 footer: 'Made with ⚡ for EV drivers',
                 warningAlreadyCharged: 'Current charge is already equal or higher than target',
                 warningLongCharge: 'Charging will take more than 12 hours. Consider a more powerful charger.',
@@ -1065,6 +1081,8 @@
                 startChargingAt: 'Commencer à charger à',
                 energyNeeded: 'Énergie nécessaire',
                 gridConsumption: 'Consommation réseau',
+                electricityPrice: 'Prix électricité',
+                chargeCost: 'Coût estimé',
                 footer: 'Fait avec ⚡ pour les conducteurs de VE',
                 warningAlreadyCharged: 'La charge actuelle est déjà égale ou supérieure à la cible',
                 warningLongCharge: 'La charge prendra plus de 12 heures. Envisagez un chargeur plus puissant.',
@@ -1111,6 +1129,8 @@
                 startChargingAt: 'Iniziare a caricare alle',
                 energyNeeded: 'Energia necessaria',
                 gridConsumption: 'Consumo dalla rete',
+                electricityPrice: 'Prezzo elettricità',
+                chargeCost: 'Costo stimato',
                 footer: 'Fatto con ⚡ per i conducenti di EV',
                 warningAlreadyCharged: 'La carica attuale è già uguale o superiore a quella desiderata',
                 warningLongCharge: 'La ricarica richiederà più di 12 ore. Considera un caricatore più potente.',
@@ -1157,6 +1177,8 @@
                 startChargingAt: 'Começar a carregar às',
                 energyNeeded: 'Energia necessária',
                 gridConsumption: 'Consumo da rede',
+                electricityPrice: 'Preço eletricidade',
+                chargeCost: 'Custo estimado',
                 footer: 'Feito com ⚡ para motoristas de VE',
                 warningAlreadyCharged: 'A carga atual já é igual ou superior à desejada',
                 warningLongCharge: 'O carregamento levará mais de 12 horas. Considere um carregador mais potente.',
@@ -1207,6 +1229,7 @@
             batteryCapacity: 50,
             chargerPower: 3.7,
             efficiency: 90,
+            electricityPrice: 0.15,
             scheduleEnabled: false,
             scheduleMode: 'end', // 'start' or 'end'
             scheduleTime: '07:00',
@@ -1233,6 +1256,7 @@
                     batteryCapacity: parseFloat(batteryCapacityInput.value),
                     chargerPower: parseFloat(chargerPowerInput.value),
                     efficiency: parseInt(efficiencyInput.value),
+                    electricityPrice: parseFloat(electricityPriceInput.value),
                     scheduleEnabled: scheduleEnabledInput.checked,
                     scheduleMode: currentScheduleMode,
                     scheduleTime: scheduleTimeInput.value,
@@ -1320,6 +1344,7 @@
         const batteryCapacityInput = document.getElementById('batteryCapacity');
         const chargerPowerInput = document.getElementById('chargerPower');
         const efficiencyInput = document.getElementById('efficiency');
+        const electricityPriceInput = document.getElementById('electricityPrice');
         const scheduleEnabledInput = document.getElementById('scheduleEnabled');
         const scheduleOptionsEl = document.getElementById('scheduleOptions');
         const scheduleTimeInput = document.getElementById('scheduleTime');
@@ -1333,6 +1358,7 @@
         const resultStart = document.getElementById('resultStart');
         const energyNeeded = document.getElementById('energyNeeded');
         const energyFromGrid = document.getElementById('energyFromGrid');
+        const chargeCost = document.getElementById('chargeCost');
         const warningMessage = document.getElementById('warningMessage');
         const warningText = document.getElementById('warningText');
 
@@ -1345,6 +1371,7 @@
             batteryCapacityInput.value = settings.batteryCapacity;
             chargerPowerInput.value = settings.chargerPower;
             efficiencyInput.value = settings.efficiency;
+            electricityPriceInput.value = settings.electricityPrice;
             scheduleEnabledInput.checked = settings.scheduleEnabled;
             scheduleTimeInput.value = settings.scheduleTime;
             currentScheduleMode = settings.scheduleMode || 'end';
@@ -1378,6 +1405,7 @@
             const capacity = Math.max(1, parseFloat(batteryCapacityInput.value) || 50);
             const power = Math.max(0.1, parseFloat(chargerPowerInput.value) || 3.7);
             const efficiency = Math.max(10, Math.min(100, parseFloat(efficiencyInput.value) || 90)) / 100;
+            const pricePerKwh = Math.max(0, parseFloat(electricityPriceInput.value) || 0.15);
 
             // Update displays
             currentValueDisplay.innerHTML = currentCharge + '<span>%</span>';
@@ -1476,6 +1504,8 @@
             // Update details
             energyNeeded.textContent = energyNeededKwh.toFixed(1) + ' kWh';
             energyFromGrid.textContent = energyFromGridKwh.toFixed(1) + ' kWh';
+            const totalCost = energyFromGridKwh * pricePerKwh;
+            chargeCost.textContent = totalCost.toFixed(2) + ' €';
 
             // Warnings
             warningMessage.classList.remove('show');
@@ -1569,6 +1599,7 @@
         batteryCapacityInput.addEventListener('input', sanitizeInput(batteryCapacityInput, 1, 500, 50));
         chargerPowerInput.addEventListener('input', sanitizeInput(chargerPowerInput, 0.1, 500, 3.7));
         efficiencyInput.addEventListener('input', sanitizeInput(efficiencyInput, 10, 100, 90));
+        electricityPriceInput.addEventListener('input', sanitizeInput(electricityPriceInput, 0, 2, 0.15));
         scheduleTimeInput.addEventListener('input', calculate);
 
         // Schedule toggle
