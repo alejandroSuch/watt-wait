@@ -4,6 +4,19 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
+## [1.6.0] - 2025-12-20
+
+### Changed
+- Optimizaciones de rendimiento:
+  - Debounce en cálculo para sliders (reduce trabajo durante arrastre)
+  - Throttle en guardado de settings (500ms)
+  - Referencias DOM cacheadas en setLanguage()
+  - requestAnimationFrame para actualizaciones visuales
+  - Botones de preset cacheados
+
+### Fixed
+- Prevenido double-tap zoom en móvil (`touch-action: manipulation`)
+
 ## [1.5.0] - 2025-12-19
 
 ### Added
