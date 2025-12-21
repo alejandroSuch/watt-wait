@@ -7,6 +7,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
 ## [1.6.0] - 2025-12-21
 
 ### Changed
+- Refactor de traducciones: valores comunes (`hours`, `minutes`) extraídos a `sharedTranslations`
 - Optimizaciones de rendimiento:
   - Debounce en cálculo para sliders (reduce trabajo durante arrastre)
   - Throttle en guardado de settings (500ms)

@@ -1037,8 +1037,15 @@
 
     <script>
         // ==================== TRANSLATIONS ====================
+        // Common translations (identical across all languages)
+        const sharedTranslations = {
+            hours: 'h',
+            minutes: 'min'
+        };
+
         const translations = {
             es: {
+                ...sharedTranslations,
                 tagline: 'Calculadora de carga para tu EV',
                 batteryLevel: 'Nivel de batería',
                 currentCharge: 'Carga actual',
@@ -1063,8 +1070,6 @@
                 warningDcCurve: 'Con carga DC, la velocidad baja significativamente por encima del 80%.',
                 warningStartInPast: 'No es posible alcanzar el {target}% a esa hora. Si empiezas ahora, llegarás al {achievable}%.',
                 nextDay: '+1 día',
-                hours: 'h',
-                minutes: 'min',
                 share: 'Compartir',
                 shareTitle: 'WattWait - Tiempo de carga',
                 shareText: 'Mi coche eléctrico necesita {time} para cargar del {from}% al {to}% con un cargador de {power} kW.',
@@ -1087,6 +1092,7 @@
                 ariaShare: 'Compartir resultado'
             },
             en: {
+                ...sharedTranslations,
                 tagline: 'Charging calculator for your EV',
                 batteryLevel: 'Battery level',
                 currentCharge: 'Current charge',
@@ -1111,8 +1117,6 @@
                 warningDcCurve: 'With DC charging, speed drops significantly above 80%.',
                 warningStartInPast: 'Cannot reach {target}% by that time. Starting now, you\'ll reach {achievable}%.',
                 nextDay: '+1 day',
-                hours: 'h',
-                minutes: 'min',
                 share: 'Share',
                 shareTitle: 'WattWait - Charging time',
                 shareText: 'My EV needs {time} to charge from {from}% to {to}% with a {power} kW charger.',
@@ -1135,6 +1139,7 @@
                 ariaShare: 'Share result'
             },
             fr: {
+                ...sharedTranslations,
                 tagline: 'Calculateur de charge pour votre VE',
                 batteryLevel: 'Niveau de batterie',
                 currentCharge: 'Charge actuelle',
@@ -1159,8 +1164,6 @@
                 warningDcCurve: 'Avec la charge DC, la vitesse diminue significativement au-dessus de 80%.',
                 warningStartInPast: 'Impossible d\'atteindre {target}% à cette heure. En commençant maintenant, vous atteindrez {achievable}%.',
                 nextDay: '+1 jour',
-                hours: 'h',
-                minutes: 'min',
                 share: 'Partager',
                 shareTitle: 'WattWait - Temps de charge',
                 shareText: 'Mon VE a besoin de {time} pour charger de {from}% à {to}% avec un chargeur de {power} kW.',
@@ -1183,6 +1186,7 @@
                 ariaShare: 'Partager le résultat'
             },
             it: {
+                ...sharedTranslations,
                 tagline: 'Calcolatore di ricarica per il tuo EV',
                 batteryLevel: 'Livello batteria',
                 currentCharge: 'Carica attuale',
@@ -1207,8 +1211,6 @@
                 warningDcCurve: 'Con la ricarica DC, la velocità diminuisce significativamente sopra l\'80%.',
                 warningStartInPast: 'Impossibile raggiungere il {target}% a quell\'ora. Iniziando ora, raggiungerai il {achievable}%.',
                 nextDay: '+1 giorno',
-                hours: 'h',
-                minutes: 'min',
                 share: 'Condividi',
                 shareTitle: 'WattWait - Tempo di ricarica',
                 shareText: 'Il mio EV ha bisogno di {time} per caricare dal {from}% al {to}% con un caricatore da {power} kW.',
@@ -1231,6 +1233,7 @@
                 ariaShare: 'Condividi risultato'
             },
             pt: {
+                ...sharedTranslations,
                 tagline: 'Calculadora de carregamento para seu VE',
                 batteryLevel: 'Nível da bateria',
                 currentCharge: 'Carga atual',
@@ -1255,8 +1258,6 @@
                 warningDcCurve: 'Com carregamento DC, a velocidade diminui significativamente acima de 80%.',
                 warningStartInPast: 'Não é possível alcançar {target}% nesse horário. Começando agora, você chegará a {achievable}%.',
                 nextDay: '+1 dia',
-                hours: 'h',
-                minutes: 'min',
                 share: 'Compartilhar',
                 shareTitle: 'WattWait - Tempo de carregamento',
                 shareText: 'Meu VE precisa de {time} para carregar de {from}% a {to}% com um carregador de {power} kW.',
