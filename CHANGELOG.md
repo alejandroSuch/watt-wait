@@ -4,7 +4,7 @@ Todos los cambios notables de este proyecto se documentan en este archivo.
 
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
 
-## [1.6.0] - 2025-12-20
+## [1.6.0] - 2025-12-21
 
 ### Changed
 - Optimizaciones de rendimiento:
@@ -17,9 +17,14 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1
   - Eliminados handlers inline `onclick` (event delegation)
   - Constantes mágicas extraídas a objeto `THRESHOLDS`
   - Selectores ARIA simplificados (referencias cacheadas)
+- Mejoras CSS:
+  - `will-change: width` en barra de batería (animación más fluida)
 
 ### Fixed
 - Prevenido double-tap zoom en móvil (`touch-action: manipulation`)
+
+### Accessibility
+- Soporte para `prefers-reduced-motion` (respeta preferencias de usuario)
 
 ## [1.5.0] - 2025-12-19
 

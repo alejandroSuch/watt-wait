@@ -244,6 +244,7 @@
             border-radius: 6px;
             transition: width 0.3s ease;
             position: relative;
+            will-change: width;
         }
 
         .battery-current {
@@ -838,6 +839,16 @@
 
             input[type="range"] {
                 background: #d0d2d5;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>

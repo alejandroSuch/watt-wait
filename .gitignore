@@ -9,3 +9,9 @@ lighthouse-report.html
 CLOUDFLARE_ANALYTICS.md
 lighthouse-report.json
 .idea/
+
+# Unwanted files
+*.torrent
+*.png
+!icons/*.png
+google*.html
